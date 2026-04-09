@@ -1,0 +1,305 @@
+Unit Kinal.Website;
+
+Get IO.File;
+Get IO.Text;
+Get IO.Web;
+Get IO.Error;
+Get IO.Directory;
+Get IO.Time;
+
+int MaxCodeSizeBytes = 4096;
+string cachedIndexPageHtml = null;
+string cachedIndexPageZhHtml = null;
+string cachedHeroCodeHtml = null;
+string cachedInitialSampleHtml = null;
+
+Trusted Static Function string EscapeHtmlText(string text)
+{
+    string value = text;
+    If (value == null)
+    {
+        Return "";
+    }
+
+    value = IO.Text.Replace(value, "&", "&amp;");
+    value = IO.Text.Replace(value, "<", "&lt;");
+    value = IO.Text.Replace(value, ">", "&gt;");
+    Return value;
+}
+
+Trusted Static Function string NextJobId()
+{
+    string job_id = "";
+    For (int i = 0; i < 64; i++)
+    {
+        job_id = [f]"{[string](IO.Time.GetNanoTick())}_{WebsiteRuntime.RandomString(8)}";
+        If (!IO.Directory.Exists(Sandbox.JobPath(job_id)))
+        {
+            Return job_id;
+        }
+    }
+    Throw New IO.Error("Unable to allocate sandbox job id", "Kinal.Website");
+}
+
+Trusted Static Function string ReadJobStatus(string job_id)
+{
+    string status_path = Sandbox.JobStatusPath(job_id);
+    If (!IO.File.Exists(status_path))
+    {
+        Return "";
+    }
+    Return IO.Text.Trim(IO.File.ReadAllText(status_path));
+}
+
+Trusted Static Function string BuildJobResponse(string status, string payload)
+{
+    If (payload == null || payload == "")
+    {
+        Return status;
+    }
+    Return [f]"{status}\n{payload}";
+}
+
+Trusted Static Function string HeroCodeHtml()
+{
+    If (cachedHeroCodeHtml != null)
+    {
+        Return cachedHeroCodeHtml;
+    }
+
+    cachedHeroCodeHtml = EscapeHtmlText(IO.File.ReadAllText(WebsitePaths.JoinPath(WebsitePaths.ManagedContentPath(), "hero.kn")));
+    Return cachedHeroCodeHtml;
+}
+
+Trusted Static Function string InitialSampleHtml()
+{
+    If (cachedInitialSampleHtml != null)
+    {
+        Return cachedInitialSampleHtml;
+    }
+
+    cachedInitialSampleHtml = EscapeHtmlText(IO.File.ReadAllText(WebsitePaths.JoinPath(WebsitePaths.ManagedContentPath(), "block.kn")));
+    Return cachedInitialSampleHtml;
+}
+
+Trusted Static Function string RenderPageHtml(string file_path)
+{
+    string html = IO.File.ReadAllText(file_path);
+    html = IO.Text.Replace(html, "{{KINAL_HERO_CODE}}", HeroCodeHtml());
+    html = IO.Text.Replace(html, "{{KINAL_INITIAL_SAMPLE_CODE}}", InitialSampleHtml());
+    Return html;
+}
+
+Trusted Static Function string ResolvePageHtml(string file_path)
+{
+    string index_page = WebsitePaths.JoinPath(WebsitePaths.ManagedHtmlPath(), "index.html");
+    string zh_page = WebsitePaths.JoinPath3(WebsitePaths.ManagedHtmlPath(), "zh-CN", "index.html");
+
+    If (file_path == index_page)
+    {
+        If (cachedIndexPageHtml == null)
+        {
+            cachedIndexPageHtml = RenderPageHtml(file_path);
+        }
+        Return cachedIndexPageHtml;
+    }
+
+    If (file_path == zh_page)
+    {
+        If (cachedIndexPageZhHtml == null)
+        {
+            cachedIndexPageZhHtml = RenderPageHtml(file_path);
+        }
+        Return cachedIndexPageZhHtml;
+    }
+
+    Return RenderPageHtml(file_path);
+}
+
+Trusted Static Function void ServePage(IO.Web.Context context, string file_path)
+{
+    context.Response.Html(ResolvePageHtml(file_path));
+}
+
+Trusted Static Function void ServeManagedPage(IO.Web.Context context, string html_relative_path)
+{
+    ServePage(context, WebsitePaths.ManagedHtmlFilePath(html_relative_path));
+}
+
+[IO.Web.Route("/")] Static Function void ServeHomePage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "index.html");
+}
+
+[IO.Web.Route("/googlecb65b3df36c5eb64.html")] Static Function void ServeGoogleVerification(IO.Web.Context context)
+{
+    context.Response.Text(IO.File.ReadAllText(WebsitePaths.ManagedFilePath("googlecb65b3df36c5eb64.html")));
+}
+
+[IO.Web.Route("/zh-CN")] Static Function void ServeChineseHomePage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "zh-CN/index.html");
+}
+
+[IO.Web.Route("/docs")] Static Function void ServeDocsPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "docs/index.html");
+}
+
+[IO.Web.Route("/download")] Static Function void ServeDownloadPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "download/index.html");
+}
+
+[IO.Web.Route("/what-is-kinal")] Static Function void ServeWhatIsKinalPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "what-is-kinal/index.html");
+}
+
+[IO.Web.Route("/why-kinal")] Static Function void ServeWhyKinalPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "why-kinal/index.html");
+}
+
+[IO.Web.Route("/faq")] Static Function void ServeFaqPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "faq/index.html");
+}
+
+[IO.Web.Route("/zh-CN/docs")] Static Function void ServeChineseDocsPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "zh-CN/docs/index.html");
+}
+
+[IO.Web.Route("/zh-CN/download")] Static Function void ServeChineseDownloadPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "zh-CN/download/index.html");
+}
+
+[IO.Web.Route("/zh-CN/what-is-kinal")] Static Function void ServeChineseWhatIsKinalPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "zh-CN/what-is-kinal/index.html");
+}
+
+[IO.Web.Route("/zh-CN/why-kinal")] Static Function void ServeChineseWhyKinalPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "zh-CN/why-kinal/index.html");
+}
+
+[IO.Web.Route("/zh-CN/faq")] Static Function void ServeChineseFaqPage(IO.Web.Context context)
+{
+    ServeManagedPage(context, "zh-CN/faq/index.html");
+}
+
+[IO.Web.Route("/robots.txt")] Static Function void ServeRobotsDocument(IO.Web.Context context)
+{
+    context.Response.Text(IO.File.ReadAllText(WebsitePaths.ManagedFilePath("robots.txt")));
+}
+
+[IO.Web.Route("/sitemap.xml")] Static Function void ServeSitemapDocument(IO.Web.Context context)
+{
+    context.Response.Send(IO.File.ReadAllText(WebsitePaths.ManagedFilePath("sitemap.xml")), 200, "application/xml; charset=utf-8");
+}
+
+[IO.Web.Route("/api/run", IO.Web.HttpMethod.POST)] Static Function void HandleRunCodeRequest(IO.Web.Context context)
+{
+    If (context.Request.ContentLength > MaxCodeSizeBytes)
+    {
+        context.Response.Text("Code payload exceeds 4 KB.", 413);
+        Return;
+    }
+
+    string code = context.Request.BodyText();
+    If (code == null || code == "")
+    {
+        context.Response.Text("No source code submitted.", 400);
+        Return;
+    }
+
+    If (code.Length() > MaxCodeSizeBytes)
+    {
+        context.Response.Text("Code payload exceeds 4 KB.", 413);
+        Return;
+    }
+
+    Try
+    {
+        Sandbox sandbox = New Sandbox(code);
+        string job_id = NextJobId();
+        sandbox.StartJob(job_id);
+        context.Response.Text(job_id, 202);
+    }
+    Catch (IO.Error e)
+    {
+        context.Response.Text(e.Title, 400);
+    }
+}
+
+[IO.Web.Route("/api/run/status")] Static Function void HandleRunCodeStatusRequest(IO.Web.Context context)
+{
+    string job_id = context.Request.QueryValue("id");
+    string status;
+    string result;
+
+    If (job_id == null || job_id == "")
+    {
+        context.Response.Text("unknown\nMissing job id.", 400);
+        Return;
+    }
+
+    status = ReadJobStatus(job_id);
+    If (status == "")
+    {
+        If (IO.Directory.Exists(Sandbox.JobPath(job_id)))
+        {
+            context.Response.Text("queued", 202);
+            Return;
+        }
+
+        If (IO.File.Exists(Sandbox.JobResultPath(job_id)))
+        {
+            status = "completed";
+        }
+        Else
+        {
+            context.Response.Text("unknown\nJob not found.", 404);
+            Return;
+        }
+    }
+
+    If (status == "queued" || status == "compiling" || status == "running")
+    {
+        context.Response.Text(status, 202);
+        Return;
+    }
+
+    result = IO.File.ReadIfExists(Sandbox.JobResultPath(job_id));
+    If (result == null)
+    {
+        result = "";
+    }
+
+    If (status == "completed")
+    {
+        context.Response.Text(BuildJobResponse(status, result));
+        Sandbox.CleanupJob(job_id);
+        Return;
+    }
+
+    If (status == "rejected")
+    {
+        context.Response.Text(BuildJobResponse(status, result), 400);
+        Sandbox.CleanupJob(job_id);
+        Return;
+    }
+
+    context.Response.Text(BuildJobResponse(status, result), 500);
+    Sandbox.CleanupJob(job_id);
+}
+
+Trusted Static Function IO.Web.Server BuildServer(int port = 18081, string host = "0.0.0.0")
+{
+    IO.Web.Server server = New IO.Web.Server(port, host);
+    server.UseStatic("/static", WebsitePaths.ManagedStaticPath()).RefreshRoutes().UseRoutes();
+    Return server;
+}

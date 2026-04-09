@@ -1,0 +1,40 @@
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environment files
+.env
+.env.*
+
+# Build and runtime artifacts
+build/
+temp/
+dist/
+out/
+*.log
+*.pid
+*.tmp
+deploy/*.tar.gz
+deploy/*.tar.xz
+deploy/*.zip
+
+# Node and package manager caches
+node_modules/
+.npm/
+.pnpm-store/
+
+# Editor and OS junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local backup leftovers
+*.backup-*

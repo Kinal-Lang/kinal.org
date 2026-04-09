@@ -1,0 +1,85 @@
+Unit Kinal.Website;
+
+Get IO.Path;
+Get IO.Directory;
+
+Static Class WebsitePaths
+{
+    Public Static Function string JoinPath(string left, string right)
+    {
+        Return IO.Path.Normalize(IO.Path.Combine(left, right));
+    }
+
+    Public Static Function string JoinPath3(string a, string b, string c)
+    {
+        Return JoinPath(JoinPath(a, b), c);
+    }
+
+    Public Static Function string JoinPath4(string a, string b, string c, string d)
+    {
+        Return JoinPath(JoinPath3(a, b, c), d);
+    }
+
+    Public Static Function string ResolveManagedRoot()
+    {
+        string cwd = IO.Path.Cwd();
+        string[] candidates = {
+            JoinPath(cwd, "managed"),
+            JoinPath4(cwd, "src", "web", "managed"),
+            JoinPath(JoinPath4(cwd, "..", "src", "web"), "managed")
+        };
+
+        For (int i = 0; i < candidates.Length(); i++)
+        {
+            string candidate = IO.Path.Normalize(candidates[i]);
+            If (IO.Directory.Exists(candidate))
+            {
+                Return candidate;
+            }
+        }
+
+        Return IO.Path.Normalize(candidates[0]);
+    }
+
+    Public Static Function string ManagedHtmlPath()
+    {
+        Return JoinPath(ResolveManagedRoot(), "html");
+    }
+
+    Public Static Function string ManagedHtmlFilePath(string relative_path)
+    {
+        Return JoinPath(ManagedHtmlPath(), relative_path);
+    }
+
+    Public Static Function string ManagedStaticPath()
+    {
+        Return JoinPath(ResolveManagedRoot(), "static");
+    }
+
+    Public Static Function string ManagedContentPath()
+    {
+        Return JoinPath(ManagedStaticPath(), "content");
+    }
+
+    Public Static Function string ManagedFilePath(string name)
+    {
+        Return JoinPath(ResolveManagedRoot(), name);
+    }
+
+    Public Static Function string TempRootPath()
+    {
+        string temp_path = JoinPath(IO.Path.Cwd(), "temp");
+        IO.Directory.Ensure(temp_path);
+        Return temp_path;
+    }
+
+    Public Static Function string SandboxJobRootPath()
+    {
+        Return JoinPath(TempRootPath(), "jobs");
+    }
+
+    Public Static Function string SandboxTempPath()
+    {
+        Return JoinPath(TempRootPath(), WebsiteRuntime.RandomString(6));
+    }
+}

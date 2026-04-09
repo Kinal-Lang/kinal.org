@@ -1,0 +1,209 @@
+Unit Kinal.Website;
+
+Enum TokenType
+{
+    Identifier, Other, Keyword, EndOfFile
+}
+
+Class Token
+{
+    Public TokenType type;
+    Public string value;
+
+    Constructor(TokenType type, string value)
+    {
+        This.type = type;
+        This.value = value;
+    }
+
+    Public Function string String()
+    {
+        Return "Token(Value: " + value + ", Type: " + ([string](type) == "0" ? "Identifier" : [string](type) == "1" ? "Other" : [string](type) == "2" ? "Keyword" : [string](type) == "3" ? "EndOfFile" : "") + ")";
+    }
+}
+
+Class Lexer
+{
+    Private string source;
+    Private int position;
+    Public Token[] tokens;
+
+    Constructor(string source)
+    {
+        This.source = source;
+        This.position = 0;
+        This.tokens = {
+        };
+    }
+
+    Static Function bool IsWhitespace(char c)
+    {
+        Return c == ' ' || c == '\t' || c == '\n' || c == '\r';
+    }
+
+    Static Function bool IsLetter(char c)
+    {
+        Return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    Static Function bool IsDigit(char c)
+    {
+        Return c >= '0' && c <= '9';
+    }
+
+    Static Function bool IsKeyword(string s)
+    {
+        Return s == "Unit" || s == "Get" || s == "Set" || s == "By" || s == "Property" || s == "Function" || s == "Extern" || s == "Return" || s == "If" || s == "Else" || s == "ElseIf" || s == "While" || s == "For" || s == "Switch" || s == "Case" || s == "Break" || s == "Continue" || s == "Try" || s == "Catch" || s == "Throw" || s == "Class" || s == "Interface" || s == "Struct" || s == "Enum" || s == "Public" || s == "Private" || s == "Protected" || s == "Internal" || s == "Static" || s == "Async" || s == "Await" || s == "Virtual" || s == "Override" || s == "Abstract" || s == "Sealed" || s == "Constructor" || s == "New" || s == "This" || s == "Base" || s == "Block" || s == "Record" || s == "Jump" || s == "Delegate" || s == "Const" || s == "Var" || s == "Safe" || s == "Trusted" || s == "Unsafe" || s == "Is";
+    }
+
+    Private Function void AddToken(TokenType type, string value)
+    {
+        tokens = tokens.Add(New Token(type, value));
+    }
+
+    Private Function bool HasNext()
+    {
+        Return position + 1 < source.Length();
+    }
+
+    Public Function void Lex()
+    {
+        While (position < source.Length())
+        {
+            char current = source[position];
+
+            If (Lexer.IsWhitespace(current))
+            {
+                position++;
+                Continue;
+            }
+
+            If (current == '/' && HasNext() && source[position + 1] == '/')
+            {
+                position += 2;
+
+                While (position < source.Length() && source[position] != '\n')
+                {
+                    position++;
+                }
+
+                Continue;
+            }
+
+            If (current == '/' && HasNext() && source[position + 1] == '*')
+            {
+                position += 2;
+
+                While (position < source.Length())
+                {
+                    If (source[position] == '*' && HasNext() && source[position + 1] == '/')
+                    {
+                        position += 2;
+                        Break;
+                    }
+
+                    position++;
+                }
+
+                Continue;
+            }
+
+            If (current == '"')
+            {
+                string text = "";
+                text += source[position];
+                position++;
+
+                While (position < source.Length())
+                {
+                    char c = source[position];
+                    text += c;
+                    position++;
+
+                    If (c == '\\' && position < source.Length())
+                    {
+                        text += source[position];
+                        position++;
+                        Continue;
+                    }
+
+                    If (c == '"')
+                    {
+                        Break;
+                    }
+                }
+
+                AddToken(TokenType.Other, text);
+                Continue;
+            }
+
+            If (current == '\'')
+            {
+                string text = "";
+                text += source[position];
+                position++;
+
+                While (position < source.Length())
+                {
+                    char c = source[position];
+                    text += c;
+                    position++;
+
+                    If (c == '\\' && position < source.Length())
+                    {
+                        text += source[position];
+                        position++;
+                        Continue;
+                    }
+
+                    If (c == '\'')
+                    {
+                        Break;
+                    }
+                }
+
+                AddToken(TokenType.Other, text);
+                Continue;
+            }
+
+            If (Lexer.IsLetter(current) || current == '_' || current == '.')
+            {
+                string text = "";
+
+                While (position < source.Length() && (Lexer.IsLetter(source[position]) || Lexer.IsDigit(source[position]) || source[position] == '_' || source[position] == '.'))
+                {
+                    text += source[position];
+                    position++;
+                }
+
+                If (Lexer.IsKeyword(text))
+                {
+                    AddToken(TokenType.Keyword, text);
+                }
+                Else
+                {
+                    AddToken(TokenType.Identifier, text);
+                }
+
+                Continue;
+            }
+
+            If (Lexer.IsDigit(current))
+            {
+                string number = "";
+
+                While (position < source.Length() && Lexer.IsDigit(source[position]))
+                {
+                    number += source[position];
+                    position++;
+                }
+
+                AddToken(TokenType.Other, number);
+                Continue;
+            }
+
+            AddToken(TokenType.Other, current.ToString());
+            position++;
+        }
+    }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>常见问题 — Kinal 编程语言</title>
+    <meta name="description" content="关于 Kinal 编程语言的常见问题。了解许可证、平台支持、性能、与其他语言的比较以及如何入门。">
+    <meta name="keywords" content="Kinal FAQ, Kinal 常见问题, Kinal 许可证, Kinal 平台, Kinal 性能, Kinal 开源">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/zh-CN/faq">
+    <meta property="og:title" content="常见问题 — Kinal 编程语言">
+    <meta property="og:description" content="关于 Kinal 编程语言的常见问题。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinal.org/zh-CN/faq">
+    <meta property="og:site_name" content="Kinal">
+    <meta property="og:locale" content="zh_CN">
+    <link rel="alternate" hreflang="en" href="https://kinal.org/faq">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/faq">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/faq">
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+</head>
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar"><a class="brand" href="/zh-CN"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><div><strong>Kinal</strong><span>更干净的语法，更直接的原生控制</span></div></a><button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="切换菜单"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button><div class="topbar-actions"><nav class="topnav">
+                <a href="/zh-CN">主页</a>
+                <a href="/zh-CN/docs">文档</a>
+                <a href="/zh-CN/download">下载</a>
+                <a href="/zh-CN/what-is-kinal">关于</a>
+                <a href="/zh-CN/faq" class="active">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><div class="locale-switch" id="locale-switch"><button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="locale-label">简体中文</span><span class="locale-caret" aria-hidden="true"></span></button><div class="locale-menu" id="locale-menu" role="menu"><a class="locale-option" href="/faq" data-locale="en" role="menuitem">English</a><a class="locale-option active" href="/zh-CN/faq" data-locale="zh-CN" role="menuitem">简体中文</a></div></div></div></header>
+    <main class="shell subpage">
+        <article class="content-page prose-page" id="faq-page">
+            <div class="content-header"><p class="eyebrow">帮助</p><h1>常见问题</h1><p class="content-lead">关于 Kinal 的常见问题，在此解答。</p></div>
+            <section class="faq-list">
+                <details class="faq-item" open><summary><h2>什么是 Kinal？</h2></summary><p>Kinal 是一门现代通用编程语言，结合了 C# 和 Java 等高级语言的可读语法和开发者体验，以及 C 和 Rust 等系统语言的底层能力和原生控制。通过 LLVM 编译为原生代码，也可在内置虚拟机上运行。</p></details>
+                <details class="faq-item"><summary><h2>Kinal 是开源的吗？</h2></summary><p>是的。Kinal 在 GitHub 上开源开发：<a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">Kinal-Lang/Kinal</a>。欢迎贡献。</p></details>
+                <details class="faq-item"><summary><h2>Kinal 支持哪些平台？</h2></summary><p>Kinal 目前完整支持 <strong>Windows</strong>、<strong>Linux</strong>、<strong>macOS</strong> 三大主流操作系统，并且它们<strong>全部同时支持 x64 和 ARM64 架构</strong>，一共 6 个原生目标编译平台。</p></details>
+                <details class="faq-item"><summary><h2>Kinal 和 Rust 有什么区别？</h2></summary><p>Rust 通过所有权系统和借用检查器专注于内存安全，这增加了编译期的复杂性。Kinal 采取不同方法 — 提供类似 C#/Java 的熟悉语法，配合直接的原生控制和 FFI，优先考虑可读性和生产力，同时仍能进行系统级工作。</p></details>
+                <details class="faq-item"><summary><h2>Kinal 和 C# 有什么区别？</h2></summary><p>C# 提供出色的开发体验，但通常运行在托管运行时上（CLR/JIT）。Kinal 借鉴了 C# 很多干净的语法 and OOP 模型，但通过 LLVM 直接编译为原生代码。Kinal 还提供一等 FFI、指针操作和运行时级控制。</p></details>
+                <details class="faq-item"><summary><h2>可以从 Kinal 调用 C 库吗？</h2></summary><p>可以。Kinal 内置了<a href="/zh-CN/docs#language/ffi">外部函数接口（FFI）</a>，可以直接声明和调用 C 函数，无需外部绑定生成器。使用 <code>Extern</code> 关键字即可。</p></details>
+                <details class="faq-item"><summary><h2>Kinal 编译器是自举的吗？</h2></summary><p><strong>目前并不是完全自举的。</strong>Kinal 语言的核心编译器使用 C 语言编写。但语言的标准库（IO.* 等）以及核心的 KinalVM 虚拟机是由 Kinal 自身编写的。</p></details>
+                <details class="faq-item"><summary><h2>学习曲线如何？</h2></summary><p>如果你了解 C#、Java 或类似的 C 系语言，你会发现 Kinal 的语法非常熟悉。<a href="/zh-CN/docs#getting-started/hello-world">入门教程</a>大约五分钟即可完成。</p></details>
+                <details class="faq-item"><summary><h2>可以不安装就试用 Kinal 吗？</h2></summary><p>可以！<a href="/zh-CN#playground">在线 Playground</a> 允许你直接在浏览器中编写和运行 Kinal 代码。</p></details>
+                <details class="faq-item"><summary><h2>有 IDE 支持吗？</h2></summary><p>提供了 VS Code 扩展，支持语法高亮和基本语言功能。可在 <a href="https://github.com/Kinal-Lang" target="_blank" rel="noopener noreferrer">Kinal-Lang GitHub 组织</a>中找到。</p></details>
+            </section>
+            <div class="content-cta"><a class="button primary" href="/zh-CN/docs">阅读文档</a><a class="button ghost" href="https://github.com/Kinal-Lang/Kinal/discussions" target="_blank" rel="noopener noreferrer">提出问题</a></div>
+        </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><div class="footer-inner"><div class="footer-brand"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><span>Kinal 编程语言</span></div><nav class="footer-links"><a href="/zh-CN/docs">文档</a><a href="/zh-CN/download">下载</a><a href="/zh-CN/what-is-kinal">关于</a><a href="/zh-CN/faq">FAQ</a><a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><p class="footer-note">由 Kinal 构建 · © 2026 Kinal Contributors</p></div></div></footer>
+    <script>(function(){var toggle=document.getElementById("topbar-toggle");var topbar=document.querySelector(".topbar");if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open")})}var ls=document.getElementById("locale-switch");var lt=document.getElementById("locale-trigger");if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}})();</script>
+</body>
+</html>

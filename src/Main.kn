@@ -1,0 +1,38 @@
+Unit Kinal.Website;
+
+Get IO.Console;
+Get IO.Web;
+
+Trusted Static Function string ResolveHost(string[] args)
+{
+    If (args.Length() > 0)
+    {
+        If (args[0] == "127.0.0.1" || args[0] == "--host=127.0.0.1")
+        {
+            Return "127.0.0.1";
+        }
+
+        If (args[0] == "0.0.0.0" || args[0] == "--host=0.0.0.0")
+        {
+            Return "0.0.0.0";
+        }
+    }
+
+    Return "0.0.0.0";
+}
+
+Trusted Static Function int Main(string[] args)
+{
+    string host = ResolveHost(args);
+
+    IO.Console.PrintLine("Starting Kinal Website...");
+    IO.Web.Server server = BuildServer(18081, host);
+    server.Start();
+    IO.Console.PrintLine("Kinal Website: " + server.Url());
+    IO.Console.PrintLine("Playground: " + server.Url() + "/api/run");
+    IO.Console.PrintLine("Routes: " + server.Url() + server.DebugRoutesPath());
+    IO.Console.PrintLine("Server: " + server.Url() + server.DebugServerPath());
+    IO.Console.PrintLine("BindHost: " + host);
+    server.Wait();
+    Return 0;
+}

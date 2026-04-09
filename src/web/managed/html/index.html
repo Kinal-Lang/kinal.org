@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kinal - Modern Programming Language | LLVM, VM, FFI, Cross-Platform</title>
+    <meta name="description"
+        content="Kinal is a modern programming language with LLVM compilation, VM execution, FFI, and cross-platform support. Write and run code instantly in the online playground.">
+    <meta name="keywords" content="Kinal, programming language, LLVM, VM, FFI, compiler, cross-platform, playground">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/">
+
+    <meta property="og:title" content="Kinal - Modern Programming Language | LLVM, VM, FFI, Cross-Platform">
+    <meta property="og:description"
+        content="A modern programming language with LLVM compilation, VM execution, FFI, and cross-platform support. Try it in the online playground.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinal.org/">
+    <meta property="og:site_name" content="Kinal">
+    <meta property="og:locale" content="en_US">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Kinal - Modern Programming Language | LLVM, VM, FFI, Cross-Platform">
+    <meta name="twitter:description"
+        content="A modern programming language with LLVM compilation, VM execution, FFI, and cross-platform support. Try it in the online playground.">
+
+    <link rel="alternate" hreflang="en" href="https://kinal.org/">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/">
+
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260402d">
+</head>
+
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <div class="brand">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div>
+                <strong>Kinal</strong>
+                <span>cleaner syntax, native control, one language model</span>
+            </div>
+        </div>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/" class="active">Home</a>
+                <a href="/docs">Docs</a>
+                <a href="/download">Download</a>
+                <a href="/what-is-kinal">About</a>
+                <a href="/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="locale-label">English</span>
+                    <span class="locale-caret" aria-hidden="true"></span>
+                </button>
+                <div class="locale-menu" id="locale-menu" role="menu">
+                    <a class="locale-option active" href="/" data-locale="en" role="menuitem">English</a>
+                    <a class="locale-option" href="/zh-CN" data-locale="zh-CN" role="menuitem">简体中文</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <section class="hero layer" id="intro">
+            <div class="hero-copy">
+                <p class="eyebrow">Why Kinal</p>
+                <div class="hero-headline">
+                    <h1>Kinal was born from a simple dissatisfaction with the usual tradeoffs.</h1>
+                    <div class="hero-leads">
+                        <p class="lead lead-primary">
+                            Kinal is a modern programming language with LLVM compilation, VM execution, FFI, and cross-platform support.
+                        </p>
+                        <p class="lead lead-secondary">
+                            C and C++ expose power but make everyday code harder than it should be. Rust and Zig push closer to
+                            the machine, but one feels costly to learn and the other can feel too script-like. C# and Java are
+                            cleaner to read and nicer to use, yet they stop before direct native control, FFI, and runtime-facing
+                            work. Kinal exists to close that gap.
+                        </p>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <a class="button primary" href="#playground">Open the Playground</a>
+                    <a class="button ghost" href="#syntax">Read the design</a>
+                </div>
+                <div class="hero-grid">
+                    <article>
+                        <span class="metric">READABLE</span>
+                        <p>Kinal tries to keep the cleaner surface people like in high-level languages, without inheriting their limits.</p>
+                    </article>
+                    <article>
+                        <span class="metric">CAPABLE</span>
+                        <p>Native bindings, metadata, runtime-facing APIs, and backend work are first-class, not escape hatches.</p>
+                    </article>
+                    <article>
+                        <span class="metric">UNIFIED</span>
+                        <p>The goal is one language that can stay elegant while still reaching the lower layers when you actually need them.</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="panel panel-hero">
+                <div class="panel-head">
+                    <div class="window-controls" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="panel-title">kinal-demo.kn</span>
+                    <span class="panel-chip">readonly</span>
+                </div>
+                <div class="code-shell readonly-shell">
+                    <div class="gutter" id="hero-lines"></div>
+                    <pre class="code-surface" id="hero-code"></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="playground layer" id="playground">
+            <div class="panel playground-panel">
+                <div class="panel-head">
+                    <div class="window-controls" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="panel-title">playground.kinal</span>
+                    <div class="panel-tools">
+                        <span class="panel-chip" id="sample-label">sample</span>
+                        <button class="run-button" id="run-button" type="button">Run</button>
+                    </div>
+                </div>
+
+                <div class="editor-frame">
+                    <div class="gutter" id="editor-lines"></div>
+                    <div class="editor-stack">
+                        <pre class="code-surface live-code" id="editor-highlight"></pre>
+                        <textarea id="editor-input" spellcheck="false" aria-label="Kinal playground editor"></textarea>
+                        <ul class="autocomplete" id="autocomplete" role="listbox" hidden></ul>
+                    </div>
+                </div>
+
+                <div class="editor-tabs" id="sample-tabs" role="tablist" aria-label="Examples">
+                    <button class="tab active" data-sample="block" type="button">Block</button>
+                    <button class="tab" data-sample="meta" type="button">Meta</button>
+                    <button class="tab" data-sample="oop" type="button">OOP</button>
+                    <button class="tab" data-sample="scope" type="button">Scope</button>
+                    <button class="tab" data-sample="custom" type="button">Custom</button>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-head">
+                        <strong>Output</strong>
+                        <span id="run-status">Ready</span>
+                    </div>
+                    <pre id="run-output">Click Run to execute a sample, or edit the code first.</pre>
+                </div>
+            </div>
+
+            <div class="syntax-copy" id="syntax">
+                <p class="eyebrow">Design Goal</p>
+                <h2>Keep the good parts of modern language ergonomics without giving up native reach.</h2>
+                <p>
+                    Kinal is not trying to be only a safer C replacement, only a cleaner scripting language, or only a
+                    comfortable application language. It is trying to combine readable syntax, useful standard library
+                    features, object-oriented structure, metadata, and direct FFI in one coherent system.
+                </p>
+                <div class="syntax-cards">
+                    <article>
+                        <h3>Syntax that stays calm</h3>
+                        <p>The language should stay teachable and readable even when the code is close to the runtime.</p>
+                    </article>
+                    <article>
+                        <h3>Features that stay useful</h3>
+                        <p>Properties, metadata, blocks, standard libraries, and OOP are meant to help real code, not just look pleasant in samples.</p>
+                    </article>
+                    <article>
+                        <h3>Lower-level work without switching languages</h3>
+                        <p>FFI and runtime-facing APIs belong inside the language, so library and engine code does not need a second syntax just to get real control.</p>
+                    </article>
+                    <article>
+                        <h3>Get started now</h3>
+                        <p>Kinal is open source and actively evolving. <a href="/download" style="color:var(--accent)">Download the latest release</a> or <a href="/docs" style="color:var(--sky)">read the documentation</a> to begin.</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="playground-footnote" role="note" aria-label="Playground notes">
+                <span class="playground-footnote-label">Kinal.org</span>
+                <span class="playground-footnote-divider" aria-hidden="true"></span>
+                <span>This site is fully implemented using Kinal itself.</span>
+
+                <span class="playground-footnote-divider-text-right">@YiYi</span>
+
+                <a class="playground-footnote-divider-text-github" href="https://github.com/Kinal-Lang/Kinal" target="_blank"
+                    rel="noopener noreferrer">
+                    GitHub
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+    <template id="kinal-hero-code">{{KINAL_HERO_CODE}}</template>
+    <template id="kinal-sample-code" data-sample="block">{{KINAL_INITIAL_SAMPLE_CODE}}</template>
+    <script src="/static/app.js?v=20260402d"></script>
+</body>
+
+</html>

@@ -1,0 +1,299 @@
+Unit Kinal.Website;
+
+Get IO.File;
+Get IO.Text;
+Get IO.System;
+Get IO.Directory;
+Get IO.Error;
+
+Class Sandbox
+{
+    Private string temp_path;
+    Private string temp_file_path;
+    Private string source_code;
+    Private string python_command;
+    Private string runner_path;
+    Private Lexer lexer;
+
+    Constructor(string source_code)
+    {
+        This.temp_path = WebsitePaths.SandboxTempPath();
+        This.temp_file_path = WebsitePaths.JoinPath(This.temp_path, "temp.kn");
+        This.source_code = source_code;
+        This.lexer = New Lexer(source_code);
+        This.python_command = WebsiteRuntime.ResolvePythonCommand();
+        This.runner_path = WebsiteRuntime.ResolveRunnerPath();
+        This.lexer.Lex();
+    }
+
+    Public Function string Execute()
+    {
+        If (!This.IsCodeSafe()) Throw New IO.Error("Error: Contains keywords or standard libraries prohibited in the sandbox \n(Extern, Delegate, IO.System, IO.Volatile, IO.File, IO.Path, IO.Panic, IO.UI, IO.__UI, IO.Web, IO.__Web, IO.Directory, IO.Memory)", "Kinal.Website.Sandbox");
+        IO.Directory.Ensure(temp_path);
+        IO.File.WriteAllText(temp_file_path, source_code);
+        If (!IO.File.Exists(temp_file_path))
+        {
+            For (int i = 0; i < 5; i++)
+            {
+                IO.File.WriteAllText(temp_file_path, source_code);
+                If (IO.File.Exists(temp_file_path)) Break;
+            }
+            If (!IO.File.Exists(temp_file_path))
+            {
+                This.CleanupTempPath();
+                Throw New IO.Error("Unable to write to temporary file", "Kinal.Website.Sandbox");
+            }
+        }
+
+        string temp_exe_path = WebsitePaths.JoinPath(temp_path, WebsiteRuntime.ExecutableFileName("temp"));
+        string compile_log_path = WebsitePaths.JoinPath(temp_path, "compile.txt");
+        This.CompileSource(temp_exe_path, compile_log_path);
+
+        string exec_result_path = WebsitePaths.JoinPath(temp_path, "result.txt");
+        string exec_error_path = WebsitePaths.JoinPath(temp_path, "stderr.txt");
+        string exec_pid_path = WebsitePaths.JoinPath(temp_path, "pid.txt");
+        string command = This.BuildRunnerRunCommand(temp_exe_path, exec_result_path, exec_error_path, exec_pid_path);
+        IO.System.Exec(command);
+
+        If (!IO.File.Exists(exec_result_path))
+        {
+            This.CleanupTempPath();
+            Throw New IO.Error("Unable to write to result file", "Kinal.Website.Sandbox");
+        }
+
+        string result = IO.File.ReadAllText(exec_result_path);
+        This.CleanupTempPath();
+        Return result;
+    }
+
+    Public Function void StartJob(string job_id)
+    {
+        string job_path = Sandbox.JobPath(job_id);
+        string job_source_path = Sandbox.JobSourcePath(job_id);
+        string job_status_path = Sandbox.JobStatusPath(job_id);
+        string command;
+
+        If (!This.IsCodeSafe()) Throw New IO.Error("Error: Contains keywords or standard libraries prohibited in the sandbox \n(Extern, Delegate, IO.System, IO.Volatile, IO.File, IO.Path, IO.Panic, IO.UI, IO.__UI, IO.Web, IO.__Web, IO.Directory, IO.Memory)", "Kinal.Website.Sandbox");
+
+        IO.Directory.Ensure(job_path);
+        IO.File.WriteAllText(job_source_path, source_code);
+        If (!IO.File.Exists(job_source_path))
+        {
+            Sandbox.CleanupJob(job_id);
+            Throw New IO.Error("Unable to write to temporary file", "Kinal.Website.Sandbox");
+        }
+
+        IO.File.WriteAllText(job_status_path, "queued");
+        command = This.BuildRunnerSpawnCommand(job_id);
+        IO.System.Exec(command);
+    }
+
+    Public Function bool IsCodeSafe()
+    {
+        For (int i = 0; i < lexer.tokens.Length(); i++)
+        {
+            If (This.IsBannedKeyword(lexer.tokens[i].value)) Return false;
+
+            If (lexer.tokens[i].type != TokenType.Identifier) Continue;
+
+            string value = This.ReadQualifiedName(i);
+            If (This.IsBannedQualifiedName(value)) Return false;
+        }
+        Return true;
+    }
+
+    Private Function bool IsBannedKeyword(string value)
+    {
+        Return value == "Extern" || value == "Delegate";
+    }
+
+    Private Function bool IsBannedQualifiedName(string value)
+    {
+        Return This.MatchesQualifiedName(value, "IO.System") || This.MatchesQualifiedName(value, "IO.Volatile") || This.MatchesQualifiedName(value, "IO.File") || This.MatchesQualifiedName(value, "IO.Path") || This.MatchesQualifiedName(value, "IO.Panic") || This.MatchesQualifiedName(value, "IO.UI") || This.MatchesQualifiedName(value, "IO.__UI") || This.MatchesQualifiedName(value, "IO.Web") || This.MatchesQualifiedName(value, "IO.__Web") || This.MatchesQualifiedName(value, "IO.Directory") || This.MatchesQualifiedName(value, "IO.Memory");
+    }
+
+    Private Function bool MatchesQualifiedName(string value, string banned)
+    {
+        If (value == banned) Return true;
+        If (value.Length() <= banned.Length()) Return false;
+
+        For (int i = 0; i < banned.Length(); i++)
+        {
+            If (value[i] != banned[i]) Return false;
+        }
+
+        Return value[banned.Length()] == '.';
+    }
+
+    Private Function string ReadQualifiedName(int start)
+    {
+        string result = "";
+        int index = start;
+        bool need_part = true;
+
+        While (index < lexer.tokens.Length())
+        {
+            Token token = lexer.tokens[index];
+            If (token.type != TokenType.Identifier) Break;
+
+            string value = token.value;
+            bool consumed = false;
+
+            For (int i = 0; i < value.Length(); i++)
+            {
+                char c = value[i];
+
+                If (c == '.')
+                {
+                    If (need_part)
+                    {
+                        consumed = false;
+                        Break;
+                    }
+
+                    result += ".";
+                    need_part = true;
+                    consumed = true;
+                    Continue;
+                }
+
+                If (!need_part)
+                {
+                    consumed = false;
+                    Break;
+                }
+
+                While (i < value.Length() && value[i] != '.')
+                {
+                    result += value[i];
+                    i++;
+                }
+
+                need_part = false;
+                consumed = true;
+
+                If (i < value.Length() && value[i] == '.')
+                {
+                    result += ".";
+                    need_part = true;
+                    consumed = true;
+                    Continue;
+                }
+
+                i--;
+            }
+
+            If (!consumed) Break;
+
+            index++;
+        }
+
+        If (need_part) Return "";
+        Return result;
+    }
+
+    Private Function void CompileSource(string temp_exe_path, string compile_log_path)
+    {
+        string command = This.BuildCompileCommand(temp_exe_path, compile_log_path);
+        If (IO.File.Exists(temp_exe_path)) Return;
+
+        For (int i = 0; i < 5; i++)
+        {
+            IO.System.Exec(command);
+            If (IO.File.Exists(temp_exe_path)) Return;
+        }
+
+        If (IO.File.Exists(compile_log_path))
+        {
+            string compile_error = IO.File.ReadAllText(compile_log_path);
+            This.CleanupTempPath();
+            Throw New IO.Error(compile_error, "Kinal.Website.Sandbox");
+        }
+        This.CleanupTempPath();
+        Throw New IO.Error("Unable to compile temporary file", "Kinal.Website.Sandbox");
+    }
+
+    Private Function string BuildCompileCommand(string temp_exe_path, string compile_log_path)
+    {
+        Return [f]"{This.python_command} {WebsiteRuntime.QuoteArgument(This.runner_path)} compile --source {WebsiteRuntime.QuoteArgument(This.temp_file_path)} --output {WebsiteRuntime.QuoteArgument(temp_exe_path)} --log {WebsiteRuntime.QuoteArgument(compile_log_path)}";
+    }
+
+    Private Function string BuildRunnerRunCommand(string temp_exe_path, string exec_result_path, string exec_error_path, string exec_pid_path)
+    {
+        Return [f]"{This.python_command} {WebsiteRuntime.QuoteArgument(This.runner_path)} run --exe {WebsiteRuntime.QuoteArgument(temp_exe_path)} --result {WebsiteRuntime.QuoteArgument(exec_result_path)} --error {WebsiteRuntime.QuoteArgument(exec_error_path)} --pid {WebsiteRuntime.QuoteArgument(exec_pid_path)} --timeout-ms 5000 --memory-limit-bytes 8388608 --max-output-bytes 4096";
+    }
+
+    Private Function string BuildRunnerSpawnCommand(string job_id)
+    {
+        Return [f]"{This.python_command} {WebsiteRuntime.QuoteArgument(This.runner_path)} spawn-job --source {WebsiteRuntime.QuoteArgument(Sandbox.JobSourcePath(job_id))} --output {WebsiteRuntime.QuoteArgument(Sandbox.JobExecutablePath(job_id))} --log {WebsiteRuntime.QuoteArgument(Sandbox.JobCompileLogPath(job_id))} --result {WebsiteRuntime.QuoteArgument(Sandbox.JobResultPath(job_id))} --error {WebsiteRuntime.QuoteArgument(Sandbox.JobErrorPath(job_id))} --pid {WebsiteRuntime.QuoteArgument(Sandbox.JobPidPath(job_id))} --status {WebsiteRuntime.QuoteArgument(Sandbox.JobStatusPath(job_id))} --timeout-ms 5000 --memory-limit-bytes 8388608 --max-output-bytes 4096";
+    }
+
+    Private Function void CleanupTempPath()
+    {
+        IO.File.DeleteIfExists(temp_file_path);
+        IO.File.DeleteIfExists(WebsitePaths.JoinPath(temp_path, WebsiteRuntime.ExecutableFileName("temp")));
+        IO.File.DeleteIfExists(WebsitePaths.JoinPath(temp_path, "compile.txt"));
+        IO.File.DeleteIfExists(WebsitePaths.JoinPath(temp_path, "result.txt"));
+        IO.File.DeleteIfExists(WebsitePaths.JoinPath(temp_path, "stderr.txt"));
+        IO.File.DeleteIfExists(WebsitePaths.JoinPath(temp_path, "pid.txt"));
+        IO.Directory.DeleteIfExists(temp_path);
+    }
+
+    Public Static Function string JobRoot()
+    {
+        Return WebsitePaths.SandboxJobRootPath();
+    }
+
+    Public Static Function string JobPath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobRoot(), job_id);
+    }
+
+    Public Static Function string JobSourcePath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobPath(job_id), "temp.kn");
+    }
+
+    Public Static Function string JobExecutablePath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobPath(job_id), WebsiteRuntime.ExecutableFileName("temp"));
+    }
+
+    Public Static Function string JobCompileLogPath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobPath(job_id), "compile.txt");
+    }
+
+    Public Static Function string JobResultPath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobPath(job_id), "result.txt");
+    }
+
+    Public Static Function string JobErrorPath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobPath(job_id), "stderr.txt");
+    }
+
+    Public Static Function string JobPidPath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobPath(job_id), "pid.txt");
+    }
+
+    Public Static Function string JobStatusPath(string job_id)
+    {
+        Return WebsitePaths.JoinPath(JobPath(job_id), "status.txt");
+    }
+
+    Public Static Function void CleanupJob(string job_id)
+    {
+        string job_path = Sandbox.JobPath(job_id);
+        IO.File.DeleteIfExists(Sandbox.JobSourcePath(job_id));
+        IO.File.DeleteIfExists(Sandbox.JobExecutablePath(job_id));
+        IO.File.DeleteIfExists(Sandbox.JobCompileLogPath(job_id));
+        IO.File.DeleteIfExists(Sandbox.JobResultPath(job_id));
+        IO.File.DeleteIfExists(Sandbox.JobErrorPath(job_id));
+        IO.File.DeleteIfExists(Sandbox.JobPidPath(job_id));
+        IO.File.DeleteIfExists(Sandbox.JobStatusPath(job_id));
+        IO.Directory.DeleteIfExists(job_path);
+    }
+}

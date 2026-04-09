@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Documentation — Kinal Programming Language</title>
+    <meta name="description"
+        content="Official documentation for the Kinal programming language. Learn syntax, types, control flow, FFI, metadata, OOP, and standard library APIs.">
+    <meta name="keywords" content="Kinal docs, Kinal documentation, programming language reference, Kinal tutorial, Kinal API">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/docs">
+
+    <meta property="og:title" content="Documentation — Kinal Programming Language">
+    <meta property="og:description" content="Official documentation for the Kinal programming language. Syntax, types, FFI, metadata and more.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinal.org/docs">
+    <meta property="og:site_name" content="Kinal">
+
+    <link rel="alternate" hreflang="en" href="https://kinal.org/docs">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/docs">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/docs">
+
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+    <!-- highlight.js dark theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
+    <style>
+        /* Blend hljs style with site design */
+        .docs-rendered pre code.hljs { background: transparent; padding: 16px; font-size: 0.85rem; line-height: 1.6; }
+        .docs-rendered .hljs-keyword { color: #ff7b72; }           /* token-keyword */
+        .docs-rendered .hljs-type    { color: #79c0ff; }           /* token-type */
+        .docs-rendered .hljs-string  { color: #a5d6ff; }           /* token-string */
+        .docs-rendered .hljs-comment { color: #636e7b; font-style: italic; } /* token-comment */
+        .docs-rendered .hljs-number  { color: #d2a8ff; }           /* token-number */
+        .docs-rendered .hljs-literal { color: #ffa657; }           /* token-boolean */
+        .docs-rendered .hljs-built_in { color: #7ee787; }          /* token-namespace */
+        .docs-rendered .hljs-title   { color: #dcdcaa; }           /* token-funcname */
+        
+        /* Table Styles */
+        .docs-rendered table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 24px 0; border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden; }
+        .docs-rendered th, .docs-rendered td { padding: 12px 16px; text-align: left; font-size: 0.88rem; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); }
+        .docs-rendered th:last-child, .docs-rendered td:last-child { border-right: none; }
+        .docs-rendered th { background: rgba(240, 246, 252, 0.04); color: var(--ink-soft); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--line); }
+        .docs-rendered td { color: var(--ink-soft); background: var(--bg-card); }
+        .docs-rendered tr:last-child td { border-bottom: none; }
+        
+        /* Code Block Wrapper */
+        .docs-rendered .code-block-wrapper { margin: 24px 0; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg-card); overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .docs-rendered .code-block-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: rgba(240, 246, 252, 0.04); border-bottom: 1px solid var(--line); font-size: 0.75rem; }
+        .docs-rendered .code-block-lang { color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+        .docs-rendered .code-block-copy { background: transparent; border: 1px solid var(--line); color: var(--ink-soft); border-radius: 4px; padding: 4px 10px; cursor: pointer; transition: all 0.2s; font-size: 0.75rem; line-height: 1; }
+        .docs-rendered .code-block-copy:hover { color: var(--ink); border-color: rgba(240, 246, 252, 0.2); background: rgba(240, 246, 252, 0.06); }
+        .docs-rendered pre { margin: 0; background: transparent; }
+        .docs-rendered pre code { display: block; overflow-x: auto; }
+    </style>
+</head>
+
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div>
+                <strong>Kinal</strong>
+                <span>cleaner syntax, native control, one language model</span>
+            </div>
+        </a>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/">Home</a>
+                <a href="/docs" class="active">Docs</a>
+                <a href="/download">Download</a>
+                <a href="/what-is-kinal">About</a>
+            
+                <a href="/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="locale-label">English</span>
+                    <span class="locale-caret" aria-hidden="true"></span>
+                </button>
+                <div class="locale-menu" id="locale-menu" role="menu">
+                    <a class="locale-option active" href="/docs" data-locale="en" role="menuitem">English</a>
+                    <a class="locale-option" href="/zh-CN/docs" data-locale="zh-CN" role="menuitem">简体中文</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="docs-layout">
+        <button class="docs-sidebar-toggle" id="docs-sidebar-toggle" type="button" aria-label="Toggle sidebar">☰ Menu</button>
+        <aside class="docs-sidebar" id="docs-sidebar">
+            <nav class="docs-nav" aria-label="Documentation navigation">
+                <div class="docs-nav-section">
+                    <h3>🚀 Getting Started</h3>
+                    <a href="#" data-doc="getting-started/installation" class="docs-nav-link">Installation Guide</a>
+                    <a href="#" data-doc="getting-started/hello-world" class="docs-nav-link">Hello World</a>
+                    <a href="#" data-doc="getting-started/project-structure" class="docs-nav-link">Project Structure</a>
+                </div>
+                <div class="docs-nav-section">
+                    <h3>📖 Language Reference</h3>
+                    <a href="#" data-doc="language/overview" class="docs-nav-link">Language Overview</a>
+                    <a href="#" data-doc="language/types" class="docs-nav-link">Type System</a>
+                    <a href="#" data-doc="language/variables" class="docs-nav-link">Variables &amp; Constants</a>
+                    <a href="#" data-doc="language/operators" class="docs-nav-link">Operators</a>
+                    <a href="#" data-doc="language/control-flow" class="docs-nav-link">Control Flow</a>
+                    <a href="#" data-doc="language/functions" class="docs-nav-link">Functions</a>
+                    <a href="#" data-doc="language/classes" class="docs-nav-link">Classes &amp; Inheritance</a>
+                    <a href="#" data-doc="language/interfaces" class="docs-nav-link">Interfaces</a>
+                    <a href="#" data-doc="language/structs-enums" class="docs-nav-link">Structs &amp; Enums</a>
+                    <a href="#" data-doc="language/modules" class="docs-nav-link">Module System</a>
+                    <a href="#" data-doc="language/generics" class="docs-nav-link">Generics</a>
+                    <a href="#" data-doc="language/safety" class="docs-nav-link">Safety Levels</a>
+                    <a href="#" data-doc="language/async" class="docs-nav-link">Async Programming</a>
+                    <a href="#" data-doc="language/blocks" class="docs-nav-link">Blocks</a>
+                    <a href="#" data-doc="language/meta" class="docs-nav-link">Meta (Annotations)</a>
+                    <a href="#" data-doc="language/ffi" class="docs-nav-link">FFI</a>
+                    <a href="#" data-doc="language/strings" class="docs-nav-link">String Features</a>
+                    <a href="#" data-doc="language/exceptions" class="docs-nav-link">Exception Handling</a>
+                </div>
+                <div class="docs-nav-section">
+                    <h3>📦 Standard Library</h3>
+                    <a href="#" data-doc="stdlib/overview" class="docs-nav-link">Overview</a>
+                    <a href="#" data-doc="stdlib/console" class="docs-nav-link">IO.Console</a>
+                    <a href="#" data-doc="stdlib/text" class="docs-nav-link">IO.Text</a>
+                    <a href="#" data-doc="stdlib/filesystem" class="docs-nav-link">IO.File / IO.Directory</a>
+                    <a href="#" data-doc="stdlib/path" class="docs-nav-link">IO.Path</a>
+                    <a href="#" data-doc="stdlib/collections" class="docs-nav-link">IO.Collections</a>
+                    <a href="#" data-doc="stdlib/async" class="docs-nav-link">IO.Async</a>
+                    <a href="#" data-doc="stdlib/time" class="docs-nav-link">IO.Time</a>
+                    <a href="#" data-doc="stdlib/system" class="docs-nav-link">IO.System</a>
+                    <a href="#" data-doc="stdlib/meta" class="docs-nav-link">IO.Meta</a>
+                </div>
+                <div class="docs-nav-section">
+                    <h3>🔧 CLI Toolchain</h3>
+                    <a href="#" data-doc="cli/compiler" class="docs-nav-link">kinal Compiler</a>
+                    <a href="#" data-doc="cli/vm" class="docs-nav-link">KinalVM</a>
+                    <a href="#" data-doc="cli/fmt" class="docs-nav-link">Code Formatter</a>
+                    <a href="#" data-doc="cli/packages" class="docs-nav-link">Package System</a>
+                </div>
+                <div class="docs-nav-section">
+                    <h3>⚙️ Advanced Topics</h3>
+                    <a href="#" data-doc="advanced/compilation-pipeline" class="docs-nav-link">Compilation Pipeline</a>
+                    <a href="#" data-doc="advanced/freestanding" class="docs-nav-link">Freestanding / Embedded</a>
+                    <a href="#" data-doc="advanced/cross-compilation" class="docs-nav-link">Cross-Compilation</a>
+                    <a href="#" data-doc="advanced/linking" class="docs-nav-link">Linking &amp; LTO</a>
+                    <a href="#" data-doc="advanced/runtime-environment-constants" class="docs-nav-link">Runtime Environment Constants</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="docs-main" id="docs-main">
+            <div class="docs-content" id="docs-content">
+                <div class="docs-welcome" id="docs-welcome">
+                    <p class="eyebrow">Reference</p>
+                    <h1>Kinal Documentation</h1>
+                    <p class="content-lead">Select a topic from the sidebar to get started, or choose one below.</p>
+
+                    <div class="docs-quick-links">
+                        <a href="#" data-doc="getting-started/installation" class="docs-quick-card">
+                            <span class="docs-card-icon">🚀</span>
+                            <div><strong>Installation</strong><p>Set up the Kinal compiler and toolchain</p></div>
+                        </a>
+                        <a href="#" data-doc="getting-started/hello-world" class="docs-quick-card">
+                            <span class="docs-card-icon">👋</span>
+                            <div><strong>Hello World</strong><p>Write and run your first program</p></div>
+                        </a>
+                        <a href="#" data-doc="language/overview" class="docs-quick-card">
+                            <span class="docs-card-icon">📖</span>
+                            <div><strong>Language Overview</strong><p>Key design principles and highlights</p></div>
+                        </a>
+                        <a href="#" data-doc="language/ffi" class="docs-quick-card">
+                            <span class="docs-card-icon">🔗</span>
+                            <div><strong>FFI</strong><p>Call C libraries from Kinal</p></div>
+                        </a>
+                        <a href="#" data-doc="stdlib/overview" class="docs-quick-card">
+                            <span class="docs-card-icon">📦</span>
+                            <div><strong>Standard Library</strong><p>IO.* namespace overview</p></div>
+                        </a>
+                        <a href="#" data-doc="cli/compiler" class="docs-quick-card">
+                            <span class="docs-card-icon">🔧</span>
+                            <div><strong>Compiler CLI</strong><p>Complete compiler options reference</p></div>
+                        </a>
+                    </div>
+                </div>
+
+                <article class="docs-article" id="docs-article" style="display:none">
+                    <div class="docs-article-head">
+                        <button id="docs-back-btn" class="docs-back-btn" type="button">← Back</button>
+                    </div>
+                    <div class="docs-rendered" id="docs-rendered"></div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <footer class="site-footer">
+        <div class="shell">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+                    <span>Kinal Programming Language</span>
+                </div>
+                <nav class="footer-links">
+                    <a href="/docs">Docs</a>
+                    <a href="/download">Download</a>
+                    <a href="/what-is-kinal">About</a>
+                    <a href="/faq">FAQ</a>
+                    <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+                </nav>
+                <p class="footer-note">Built with Kinal · © 2026 Kinal Contributors</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- marked.js - full-featured markdown parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@13/marked.min.js"></script>
+    <!-- highlight.js - syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/c.min.js"></script>
+    <script src="/static/kinal-highlight.js"></script>
+    <script>
+    (function(){
+        // Topbar
+        var toggle=document.getElementById("topbar-toggle");
+        var topbar=document.querySelector(".topbar");
+        if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open")})}
+        var ls=document.getElementById("locale-switch");
+        var lt=document.getElementById("locale-trigger");
+        if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}
+
+        // Sidebar toggle
+        var sidebarToggle=document.getElementById("docs-sidebar-toggle");
+        var sidebar=document.getElementById("docs-sidebar");
+        if(sidebarToggle&&sidebar){sidebarToggle.addEventListener("click",function(){sidebar.classList.toggle("open")})}
+
+        // Removed local HLJS Kinal registration in favor of standalone kinal-highlight.js
+        
+        // Configure marked
+        marked.setOptions({
+            gfm: true,
+            breaks: false,
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try { return hljs.highlight(code, { language: lang }).value; } catch(e){}
+                }
+                // Auto-detect or plain
+                try { return hljs.highlightAuto(code).value; } catch(e) { return code; }
+            }
+        });
+
+        // Docs rendering
+        var welcome=document.getElementById("docs-welcome");
+        var article=document.getElementById("docs-article");
+        var rendered=document.getElementById("docs-rendered");
+        var backBtn=document.getElementById("docs-back-btn");
+        var docLinks=document.querySelectorAll("[data-doc]");
+        var cache={};
+        var currentDoc=null;
+
+        function loadDoc(docPath){
+            // Clear active state
+            for(var j=0;j<docLinks.length;j++){docLinks[j].classList.remove("active")}
+            // Set active
+            for(var j=0;j<docLinks.length;j++){if(docLinks[j].getAttribute("data-doc")===docPath){docLinks[j].classList.add("active")}}
+
+            if(cache[docPath]){
+                showDoc(cache[docPath],docPath);
+                return;
+            }
+
+            rendered.innerHTML='<div class="releases-loading"><div class="spinner"></div><p>Loading...</p></div>';
+            welcome.style.display="none";
+            article.style.display="block";
+
+            var url="/static/docs/"+docPath+".md";
+            fetch(url).then(function(r){
+                if(!r.ok)throw new Error("HTTP "+r.status);
+                return r.text()
+            }).then(function(md){
+                cache[docPath]=md;
+                showDoc(md,docPath);
+            }).catch(function(err){
+                rendered.innerHTML='<div class="releases-empty"><p>Unable to load document. <a href="https://github.com/Kinal-Lang/Kinal/tree/main/docs/'+encodeURIComponent(docPath)+'.md" target="_blank" rel="noopener noreferrer">View on GitHub</a></p></div>';
+            });
+        }
+
+        function showDoc(md,docPath){
+            welcome.style.display="none";
+            article.style.display="block";
+            rendered.innerHTML=marked.parse(md);
+
+            // Re-structure Code Blocks
+            var pres = rendered.querySelectorAll('pre');
+            for(var i = 0; i < pres.length; i++) {
+                var pre = pres[i];
+                var codeEl = pre.querySelector('code');
+                if (!codeEl) continue;
+                
+                // Trim leading empty newline artifact inside code blocks
+                codeEl.innerHTML = codeEl.innerHTML.replace(/^\s*\n/, '');
+
+                var langMatch = codeEl.className.match(/language-([a-zA-Z0-9_-]+)/);
+                var langText = langMatch ? langMatch[1] : 'text';
+                
+                var wrapper = document.createElement('div');
+                wrapper.className = 'code-block-wrapper';
+                var header = document.createElement('div');
+                header.className = 'code-block-header';
+                
+                var langSpan = document.createElement('span');
+                langSpan.className = 'code-block-lang';
+                langSpan.textContent = langText === 'kinal' ? 'Kinal' : langText;
+                
+                var copyBtn = document.createElement('button');
+                copyBtn.className = 'code-block-copy';
+                copyBtn.textContent = 'Copy';
+                (function(textToCopy, btn) {
+                    btn.onclick = function() {
+                        navigator.clipboard.writeText(textToCopy).then(function() {
+                            var old = btn.textContent;
+                            btn.textContent = 'Copied!';
+                            setTimeout(function(){ btn.textContent = old; }, 2000);
+                        });
+                    };
+                })(codeEl.textContent, copyBtn);
+                
+                header.appendChild(langSpan);
+                header.appendChild(copyBtn);
+                
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(header);
+                wrapper.appendChild(pre);
+
+                if (langText === 'kinal' || langText === 'kn') {
+                    if (window.highlightKinal) {
+                        codeEl.innerHTML = window.highlightKinal(codeEl.textContent);
+                        codeEl.classList.add('hljs');
+                        codeEl.style.backgroundColor = "transparent";
+                        codeEl.parentElement.style.backgroundColor = "transparent";
+                    }
+                } else if (!codeEl.classList.contains('hljs')) {
+                    hljs.highlightElement(codeEl);
+                    if (langText === 'bash' || langText === 'sh') {
+                        // Empower boring bash output with Custom Kinal CLI Colors
+                        codeEl.innerHTML = codeEl.innerHTML
+                            .replace(/\b(kinal)\b/g, '<span class="token-namespace">$1</span>')
+                            .replace(/\b(build|run|fmt|test|new|pkg)\b/g, '<span class="token-funcname">$1</span>')
+                            .replace(/(\s-[a-zA-Z0-9-]+)(\s|$)/g, '<span class="token-number">$1</span>$2');
+                    }
+                }
+            }
+
+            // Resolve and intercept Markdown internal links
+            function resolveDocPath(base, rel) {
+                var baseParts = base.split('/').slice(0, -1);
+                var relParts = rel.replace(/\.md(#[^]*)?$/, '').split('/');
+                for(var k=0; k<relParts.length; k++){
+                    if(relParts[k] === '.' || relParts[k] === '') continue;
+                    if(relParts[k] === '..') { baseParts.pop(); }
+                    else { baseParts.push(relParts[k]); }
+                }
+                return baseParts.join('/');
+            }
+
+            var links = rendered.querySelectorAll('a');
+            for (var l = 0; l < links.length; l++) {
+                var a = links[l];
+                var href = a.getAttribute('href');
+                if (href && !href.startsWith('http') && !href.startsWith('mailto:') && !href.startsWith('#')) {
+                    var filePart = href;
+                    var hashPart = '';
+                    if (href.indexOf('#') > -1) {
+                        filePart = href.substring(0, href.indexOf('#'));
+                        hashPart = href.substring(href.indexOf('#'));
+                    }
+                    if (filePart) {
+                        var targetDoc = resolveDocPath(docPath, filePart);
+                        a.setAttribute('href', '#' + targetDoc + hashPart);
+                        (function(target) {
+                            a.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                loadDoc(target);
+                            });
+                        })(targetDoc);
+                    }
+                }
+            }
+
+            currentDoc=docPath;
+            window.location.hash=docPath;
+            window.scrollTo(0,0);
+            sidebar.classList.remove("open");
+        }
+
+        function showWelcome(){
+            welcome.style.display="block";
+            article.style.display="none";
+            rendered.innerHTML="";
+            currentDoc=null;
+            window.location.hash="";
+            for(var j=0;j<docLinks.length;j++){docLinks[j].classList.remove("active")}
+        }
+
+        // Event listeners
+        for(var i=0;i<docLinks.length;i++){
+            docLinks[i].addEventListener("click",function(e){
+                e.preventDefault();
+                var docPath=this.getAttribute("data-doc");
+                if(docPath)loadDoc(docPath);
+            });
+        }
+
+        if(backBtn){backBtn.addEventListener("click",function(){showWelcome()})}
+
+        // Hash routing
+        function handleHashChange() {
+            if(topbar) topbar.classList.remove("menu-open");
+            var hash = window.location.hash.replace(/^#/, "");
+            if (hash) {
+                if (hash !== currentDoc) loadDoc(hash);
+            } else {
+                showWelcome();
+            }
+        }
+        window.addEventListener("hashchange", handleHashChange);
+        
+        var initHash=window.location.hash.replace(/^#/,"");
+        if(initHash){loadDoc(initHash)}
+    })();
+    </script>
+</body>
+
+</html>

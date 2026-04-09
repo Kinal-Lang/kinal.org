@@ -1,0 +1,34 @@
+Unit App;
+
+Get Console By IO.Console;
+
+Static Function int Main()
+{
+    Block ScopeDecl </
+    Class Temp
+    {
+    }
+    Struct Pair
+    {
+        int A;
+        int B;
+    }
+    Enum Flag
+    {
+        Off,
+        On
+    }
+    Interface ITemp
+    {
+        Function void Touch();
+    }
+    Function int LocalAdd(int a, int b)
+    {
+        Return a + b;
+    }
+    Console.PrintLine(LocalAdd(3, 4));
+    />
+
+    ScopeDecl.Run();
+    Return 0;
+}

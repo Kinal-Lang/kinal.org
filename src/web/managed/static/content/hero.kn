@@ -1,0 +1,9 @@
+Unit App;
+
+Get IO.Console;
+
+Static Function int Main()
+{
+    IO.Console.PrintLine("Hello, World!");
+    Return 0;
+}

@@ -1,0 +1,39 @@
+Unit App;
+
+Get Console By IO.Console;
+
+Class Counter
+{
+    Private int _Value;
+
+    Constructor(int start)
+    {
+        Value = start;
+    }
+
+    Public Property int Value
+    {
+        Get
+        {
+            Return _Value;
+        }
+        Set
+        {
+            _Value = value;
+        }
+    }
+
+    Public Function void Step()
+    {
+        Value = Value + 1;
+    }
+}
+
+Static Function int Main()
+{
+    Counter counter = New Counter(4);
+    counter.Step();
+    counter.Step();
+    Console.PrintLine(counter.Value);
+    Return 0;
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>为什么选择 Kinal？ — 设计理念与动机</title>
+    <meta name="description" content="为什么选择 Kinal？了解塑造 Kinal 作为现代系统级语言的设计理念、动机和取舍。">
+    <meta name="keywords" content="为什么 Kinal, Kinal 对比 Rust, Kinal 对比 C++, 编程语言对比, Kinal 设计理念">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/zh-CN/why-kinal">
+    <meta property="og:title" content="为什么选择 Kinal？— 设计理念与动机">
+    <meta property="og:description" content="为什么选择 Kinal？设计理念、动机和与其他语言的比较。">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kinal.org/zh-CN/why-kinal">
+    <meta property="og:site_name" content="Kinal">
+    <meta property="og:locale" content="zh_CN">
+    <link rel="alternate" hreflang="en" href="https://kinal.org/why-kinal">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/why-kinal">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/why-kinal">
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+</head>
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar"><a class="brand" href="/zh-CN"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><div><strong>Kinal</strong><span>更干净的语法，更直接的原生控制</span></div></a><button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="切换菜单"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button><div class="topbar-actions"><nav class="topnav">
+                <a href="/zh-CN">主页</a>
+                <a href="/zh-CN/docs">文档</a>
+                <a href="/zh-CN/download">下载</a>
+                <a href="/zh-CN/what-is-kinal" class="active">关于</a>
+            
+                <a href="/zh-CN/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><div class="locale-switch" id="locale-switch"><button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="locale-label">简体中文</span><span class="locale-caret" aria-hidden="true"></span></button><div class="locale-menu" id="locale-menu" role="menu"><a class="locale-option" href="/why-kinal" data-locale="en" role="menuitem">English</a><a class="locale-option active" href="/zh-CN/why-kinal" data-locale="zh-CN" role="menuitem">简体中文</a></div></div></div></header>
+    <main class="shell subpage">
+        <article class="content-page prose-page" id="why-kinal-page">
+            <div class="content-header"><p class="eyebrow">理念</p><h1>为什么选择 Kinal？</h1><p class="content-lead">编程语言繁多。这里解释为什么 Kinal 存在，以及它试图以不同方式解决哪些问题。</p></div>
+            <section class="prose-section"><h2>舒适与能力之间的鸿沟</h2><p>C#、Java 和 Python 等高级语言提供了高效的语法、丰富的生态系统和出色的开发体验。但当你需要编写原生库、调用 C API、直接操作硬件或控制运行时本身时，这些语言会遇到瓶颈。</p><p>C、C++ 和 Rust 等系统语言提供了硬件访问能力。但语法变得密集，学习曲线变陡，简单的事情也需要花费比应有更多的精力。</p><p>Kinal 从一开始就被设计用来占据这两个极端之间的空间。</p></section>
+            <section class="prose-section"><h2>设计原则</h2>
+                <div class="principle-list">
+                    <div class="principle-item"><h3>1. 语法应该保持平静</h3><p>无论你在编写 Web 处理程序、FFI 绑定还是内存分配器，代码看起来应该是可辨认且可读的。</p></div>
+                    <div class="principle-item"><h3>2. 特性应当证明其价值</h3><p>OOP、元数据、代码块、委托 — Kinal 中的每个特性都存在于解决真实代码库中的真实问题。</p></div>
+                    <div class="principle-item"><h3>3. 一门语言，全栈覆盖</h3><p>你不应该需要为 FFI 切换到 C、为构建脚本切换到其他工具、或为底层运行时工作切换到另一门语言。</p></div>
+                    <div class="principle-item"><h3>4. 原生控制不是逃生舱口</h3><p>FFI、指针操作和运行时 API 是 Kinal 中的一等公民，是语言设计的一部分。</p></div>
+                </div>
+            </section>
+            <section class="prose-section"><h2>Kinal 有何不同？</h2>
+                <div class="comparison-table-wrapper"><table class="comparison-table"><thead><tr><th>方面</th><th>C / C++</th><th>Rust</th><th>C# / Java</th><th>Kinal</th></tr></thead><tbody><tr><td>可读语法</td><td>有限</td><td>中等</td><td>✓ 干净</td><td>✓ 干净</td></tr><tr><td>原生编译</td><td>✓</td><td>✓</td><td>仅 JIT</td><td>✓ LLVM</td></tr><tr><td>FFI（调用 C）</td><td>原生</td><td>unsafe 块</td><td>P/Invoke / JNI</td><td>✓ 内置</td></tr><tr><td>OOP</td><td>部分</td><td>仅 Trait</td><td>✓ 完整</td><td>✓ 完整</td></tr><tr><td>元数据/反射</td><td>✗</td><td>有限宏</td><td>✓</td><td>✓</td></tr><tr><td>编译器自举</td><td>✓</td><td>✓</td><td>✓</td><td>尚未完全自举</td></tr></tbody></table></div>
+            </section>
+            <div class="content-cta"><a class="button primary" href="/zh-CN/what-is-kinal">了解更多关于 Kinal</a><a class="button ghost" href="/zh-CN/download">获取编译器</a></div>
+        </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><div class="footer-inner"><div class="footer-brand"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><span>Kinal 编程语言</span></div><nav class="footer-links"><a href="/zh-CN/docs">文档</a><a href="/zh-CN/download">下载</a><a href="/zh-CN/what-is-kinal">关于</a><a href="/zh-CN/faq">FAQ</a><a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><p class="footer-note">由 Kinal 构建 · © 2026 Kinal Contributors</p></div></div></footer>
+    <script>(function(){var toggle=document.getElementById("topbar-toggle");var topbar=document.querySelector(".topbar");if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open")})}var ls=document.getElementById("locale-switch");var lt=document.getElementById("locale-trigger");if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}})();</script>
+</body>
+</html>

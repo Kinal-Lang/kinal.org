@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kinal - 现代编程语言 | LLVM、VM、FFI 与跨平台</title>
+    <meta name="description" content="Kinal 是一门现代编程语言，支持 LLVM 编译、虚拟机执行、FFI 和跨平台开发。提供在线 Playground，可直接编写并运行代码。">
+    <meta name="keywords" content="Kinal, 编程语言, LLVM, VM, FFI, 编译器, 跨平台, Playground">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/zh-CN">
+
+    <meta property="og:title" content="Kinal - 现代编程语言 | LLVM、VM、FFI 与跨平台">
+    <meta property="og:description" content="支持 LLVM 编译、虚拟机执行、FFI 和跨平台开发的现代编程语言，提供在线 Playground。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinal.org/zh-CN">
+    <meta property="og:site_name" content="Kinal">
+    <meta property="og:locale" content="zh_CN">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Kinal - 现代编程语言 | LLVM、VM、FFI 与跨平台">
+    <meta name="twitter:description" content="支持 LLVM 编译、虚拟机执行、FFI 和跨平台开发的现代编程语言，提供在线 Playground。">
+
+    <link rel="alternate" hreflang="en" href="https://kinal.org/">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/">
+
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260402d">
+</head>
+
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <div class="brand">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div>
+                <strong>Kinal</strong>
+                <span>更干净的语法，更直接的原生控制</span>
+            </div>
+        </div>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="切换菜单">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/zh-CN" class="active">主页</a>
+                <a href="/zh-CN/docs">文档</a>
+                <a href="/zh-CN/download">下载</a>
+                <a href="/zh-CN/what-is-kinal">关于</a>
+                <a href="/zh-CN/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="locale-label">简体中文</span>
+                    <span class="locale-caret" aria-hidden="true"></span>
+                </button>
+                <div class="locale-menu" id="locale-menu" role="menu">
+                    <a class="locale-option" href="/" data-locale="en" role="menuitem">English</a>
+                    <a class="locale-option active" href="/zh-CN" data-locale="zh-CN" role="menuitem">简体中文</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <section class="hero layer" id="intro">
+            <div class="hero-copy">
+                <p class="eyebrow">Why Kinal</p>
+                <div class="hero-headline">
+                    <h1>Kinal 的诞生，来自对现有语言取舍方式的不满足。</h1>
+                    <div class="hero-leads">
+                        <p class="lead lead-primary">
+                            Kinal 是一门支持 LLVM 编译和虚拟机执行的现代编程语言，提供 FFI、原生控制和跨平台能力。
+                        </p>
+                        <p class="lead lead-secondary">
+                            Rust 和 C++ 足够强，但语法负担重、学习成本也高。Zig 更直接，却又容易给人偏脚本化的感觉。
+                            C 的能力不够完整，C# 和 Java 的语法、特性和标准库更舒服，却缺少真正的底层控制、原生交互和 FFI。
+                            Kinal 想解决的，就是这条断层。
+                        </p>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <a class="button primary" href="#playground">打开 Playground</a>
+                    <a class="button ghost" href="#syntax">查看设计目标</a>
+                </div>
+                <div class="hero-grid">
+                    <article>
+                        <span class="metric">READABLE</span>
+                        <p>它想保留高级语言那种更干净、更稳定、更容易进入状态的书写体验。</p>
+                    </article>
+                    <article>
+                        <span class="metric">CAPABLE</span>
+                        <p>同时又不把原生交互、运行时能力、元数据和 FFI 赶到语言外面去。</p>
+                    </article>
+                    <article>
+                        <span class="metric">UNIFIED</span>
+                        <p>目标是一门语言同时覆盖工具、库、运行时和后端，而不是优雅和控制力只能二选一。</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="panel panel-hero">
+                <div class="panel-head">
+                    <div class="window-controls" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="panel-title">kinal-demo.kn</span>
+                    <span class="panel-chip">只读</span>
+                </div>
+                <div class="code-shell readonly-shell">
+                    <div class="gutter" id="hero-lines"></div>
+                    <pre class="code-surface" id="hero-code"></pre>
+                </div>
+            </div>
+        </section>
+
+        <section class="playground layer" id="playground">
+            <div class="panel playground-panel">
+                <div class="panel-head">
+                    <div class="window-controls" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="panel-title">playground.kinal</span>
+                    <div class="panel-tools">
+                        <span class="panel-chip" id="sample-label">示例</span>
+                        <button class="run-button" id="run-button" type="button">运行</button>
+                    </div>
+                </div>
+
+                <div class="editor-frame">
+                    <div class="gutter" id="editor-lines"></div>
+                    <div class="editor-stack">
+                        <pre class="code-surface live-code" id="editor-highlight"></pre>
+                        <textarea id="editor-input" spellcheck="false" aria-label="Kinal Playground 编辑器"></textarea>
+                        <ul class="autocomplete" id="autocomplete" role="listbox" hidden></ul>
+                    </div>
+                </div>
+
+                <div class="editor-tabs" id="sample-tabs" role="tablist" aria-label="示例">
+                    <button class="tab active" data-sample="block" type="button">代码块</button>
+                    <button class="tab" data-sample="meta" type="button">元数据</button>
+                    <button class="tab" data-sample="oop" type="button">面向对象</button>
+                    <button class="tab" data-sample="scope" type="button">作用域</button>
+                    <button class="tab" data-sample="custom" type="button">自定义</button>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-head">
+                        <strong>输出</strong>
+                        <span id="run-status">就绪</span>
+                    </div>
+                    <pre id="run-output">点击运行来执行示例，或者先编辑代码。</pre>
+                </div>
+            </div>
+
+            <div class="syntax-copy" id="syntax">
+                <p class="eyebrow">Design Goal</p>
+                <h2>把高级语言的可读性和底层能力放进同一门语言里。</h2>
+                <p>
+                    Kinal 不想只做“更安全的底层语言”，也不想只做“更舒服的业务语言”。
+                    它要的是可读的语法、顺手的标准库、面向对象结构、元数据能力，以及直接面向运行时和原生 API 的能力，同时存在于一套统一的系统里。
+                </p>
+                <div class="syntax-cards">
+                    <article>
+                        <h3>语法要稳</h3>
+                        <p>即使代码已经靠近运行时，语法也不应该立刻变得难学、难写、难读。</p>
+                    </article>
+                    <article>
+                        <h3>特性要真正有用</h3>
+                        <p>属性、元数据、代码块对象、OOP 和标准库，不是为了好看，而是为了让真实项目更顺手。</p>
+                    </article>
+                    <article>
+                        <h3>底层能力不能缺席</h3>
+                        <p>FFI 和运行时接口应该是语言的一部分，而不是写到关键位置就被迫切换到另一门语言。</p>
+                    </article>
+                    <article>
+                        <h3>立即开始</h3>
+                        <p>Kinal 已开源且在活跃开发中。<a href="/zh-CN/download" style="color:var(--accent)">下载最新版本</a>或<a href="/zh-CN/docs" style="color:var(--sky)">阅读文档</a>来开始使用。</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="playground-footnote" role="note" aria-label="Playground 说明">
+                <span class="playground-footnote-label">Kinal.org</span>
+                <span class="playground-footnote-divider" aria-hidden="true"></span>
+                <span>此站点的服务完全由 Kinal 自身进行编写。</span>
+
+                <span class="playground-footnote-divider-text-right">@YiYi</span>
+                <a class="playground-footnote-divider-text-github" href="https://github.com/Kinal-Lang/Kinal" target="_blank"
+                    rel="noopener noreferrer">
+                    GitHub
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <template id="kinal-hero-code">{{KINAL_HERO_CODE}}</template>
+    <template id="kinal-sample-code" data-sample="block">{{KINAL_INITIAL_SAMPLE_CODE}}</template>
+    <script src="/static/app.js?v=20260402d"></script>
+</body>
+
+</html>

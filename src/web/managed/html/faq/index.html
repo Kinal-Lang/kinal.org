@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FAQ — Kinal Programming Language</title>
+    <meta name="description" content="Frequently asked questions about the Kinal programming language. Learn about licensing, platforms, performance, comparisons, and how to get started.">
+    <meta name="keywords" content="Kinal FAQ, Kinal questions, Kinal license, Kinal platforms, Kinal performance, Kinal open source">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/faq">
+    <meta property="og:title" content="FAQ — Kinal Programming Language">
+    <meta property="og:description" content="Frequently asked questions about the Kinal programming language.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinal.org/faq">
+    <meta property="og:site_name" content="Kinal">
+    <link rel="alternate" hreflang="en" href="https://kinal.org/faq">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/faq">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/faq">
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+</head>
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div><strong>Kinal</strong><span>cleaner syntax, native control, one language model</span></div>
+        </a>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/">Home</a>
+                <a href="/docs">Docs</a>
+                <a href="/download">Download</a>
+                <a href="/what-is-kinal">About</a>
+                <a href="/faq" class="active">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="locale-label">English</span><span class="locale-caret" aria-hidden="true"></span></button>
+                <div class="locale-menu" id="locale-menu" role="menu">
+                    <a class="locale-option active" href="/faq" data-locale="en" role="menuitem">English</a>
+                    <a class="locale-option" href="/zh-CN/faq" data-locale="zh-CN" role="menuitem">简体中文</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="shell subpage">
+        <article class="content-page prose-page" id="faq-page">
+            <div class="content-header"><p class="eyebrow">Support</p><h1>Frequently Asked Questions</h1><p class="content-lead">Common questions about Kinal, answered.</p></div>
+            <section class="faq-list">
+                <details class="faq-item" open><summary><h2>What is Kinal?</h2></summary><p>Kinal is a modern, general-purpose programming language that combines the readable syntax and developer ergonomics of high-level languages like C# and Java with the low-level capability and native control of systems languages like C and Rust. It compiles to native code via LLVM and can also run on its built-in virtual machine.</p></details>
+                <details class="faq-item"><summary><h2>Is Kinal open source?</h2></summary><p>Yes. Kinal is developed openly on GitHub at <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">Kinal-Lang/Kinal</a>. Contributions are welcome.</p></details>
+                <details class="faq-item"><summary><h2>What platforms does Kinal support?</h2></summary><p>Kinal currently supports <strong>Windows</strong>, <strong>Linux</strong>, and <strong>macOS</strong>. Each of these operating systems perfectly supports both <strong>x64</strong> and <strong>ARM64</strong> architectures, offering a total of 6 native compilation targets.</p></details>
+                <details class="faq-item"><summary><h2>How does Kinal compare to Rust?</h2></summary><p>Rust focuses on memory safety through its ownership system and borrow checker, which adds compile-time complexity. Kinal takes a different approach — it provides a familiar, C#/Java-like syntax with direct native control and FFI, prioritizing readability and productivity while still enabling systems-level work.</p></details>
+                <details class="faq-item"><summary><h2>How does Kinal compare to C#?</h2></summary><p>C# provides excellent developer experience but typically runs on a managed runtime (CLR/JIT). Kinal borrows much of C#'s clean syntax and OOP model but compiles directly to native code via LLVM. Kinal also provides first-class FFI, pointer operations, and runtime-level control.</p></details>
+                <details class="faq-item"><summary><h2>Can I call C libraries from Kinal?</h2></summary><p>Yes. Kinal has a built-in <a href="/docs#language/ffi">Foreign Function Interface (FFI)</a> that lets you declare and call C functions directly without external binding generators. Just use the <code>Extern</code> keyword.</p></details>
+                <details class="faq-item"><summary><h2>Is the Kinal compiler self-hosted?</h2></summary><p><strong>Not fully yet.</strong> The core Kinal compiler is written in C. However, the standard library (IO.*) and the KinalVM are written entirely in Kinal itself. Achieving self-hosting for the compiler is an upcoming goal on our roadmap.</p></details>
+                <details class="faq-item"><summary><h2>What is the learning curve like?</h2></summary><p>If you know C#, Java, or similar C-family languages, you will find Kinal's syntax very familiar. The <a href="/docs#getting-started/hello-world">Getting Started tutorial</a> takes about five minutes.</p></details>
+                <details class="faq-item"><summary><h2>Can I try Kinal without installing anything?</h2></summary><p>Yes! The <a href="/#playground">online playground</a> lets you write and run Kinal code directly in your browser.</p></details>
+                <details class="faq-item"><summary><h2>Is there IDE support?</h2></summary><p>A VS Code extension is available with syntax highlighting and basic language support. You can find it in the <a href="https://github.com/Kinal-Lang" target="_blank" rel="noopener noreferrer">Kinal-Lang GitHub organization</a>.</p></details>
+            </section>
+            <div class="content-cta"><a class="button primary" href="/docs">Read the Docs</a><a class="button ghost" href="https://github.com/Kinal-Lang/Kinal/discussions" target="_blank" rel="noopener noreferrer">Ask a Question</a></div>
+        </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><div class="footer-inner"><div class="footer-brand"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><span>Kinal Programming Language</span></div><nav class="footer-links"><a href="/docs">文档</a><a href="/download">下载</a><a href="/what-is-kinal">关于</a><a href="/faq">FAQ</a><a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><p class="footer-note">Built with Kinal · © 2026 Kinal Contributors</p></div></div></footer>
+    <script>(function(){var toggle=document.getElementById("topbar-toggle");var topbar=document.querySelector(".topbar");if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open");})}var ls=document.getElementById("locale-switch");var lt=document.getElementById("locale-trigger");if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}})();</script>
+</body>
+</html>

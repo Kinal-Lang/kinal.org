@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Why Kinal? — Design Philosophy &amp; Motivation</title>
+    <meta name="description"
+        content="Why choose Kinal over other programming languages? Learn about the design philosophy, motivations, and trade-offs that shaped Kinal as a modern systems-capable language.">
+    <meta name="keywords" content="why Kinal, Kinal vs Rust, Kinal vs C++, programming language comparison, Kinal design philosophy">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/why-kinal">
+
+    <meta property="og:title" content="Why Kinal? — Design Philosophy & Motivation">
+    <meta property="og:description" content="Why choose Kinal? Design philosophy, motivations, and how Kinal compares with other languages.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kinal.org/why-kinal">
+    <meta property="og:site_name" content="Kinal">
+
+    <link rel="alternate" hreflang="en" href="https://kinal.org/why-kinal">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/why-kinal">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/why-kinal">
+
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+</head>
+
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div>
+                <strong>Kinal</strong>
+                <span>cleaner syntax, native control, one language model</span>
+            </div>
+        </a>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/">Home</a>
+                <a href="/docs">Docs</a>
+                <a href="/download">Download</a>
+                <a href="/what-is-kinal" class="active">About</a>
+            
+                <a href="/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="locale-label">English</span>
+                    <span class="locale-caret" aria-hidden="true"></span>
+                </button>
+                <div class="locale-menu" id="locale-menu" role="menu">
+                    <a class="locale-option active" href="/why-kinal" data-locale="en" role="menuitem">English</a>
+                    <a class="locale-option" href="/zh-CN/why-kinal" data-locale="zh-CN" role="menuitem">简体中文</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell subpage">
+        <article class="content-page prose-page" id="why-kinal-page">
+            <div class="content-header">
+                <p class="eyebrow">Philosophy</p>
+                <h1>Why Kinal?</h1>
+                <p class="content-lead">There are many programming languages. Here is why Kinal exists, and what problems it tries to solve differently.</p>
+            </div>
+
+            <section class="prose-section">
+                <h2>The Gap Between Comfortable and Capable</h2>
+                <p>High-level languages like C#, Java, and Python give you productive syntax, rich ecosystems, and great developer experience. But when you need to write a native library, call a C API, talk directly to hardware, or control the runtime itself — these languages hit a wall.</p>
+                <p>Systems languages like C, C++, and Rust give you the hardware access. But the syntax gets dense, the learning curve steepens, and simple things take more effort than they should.</p>
+                <p>Kinal was designed from the ground up to occupy the space between these two extremes. It wants you to write code that <em>reads</em> like a high-level language while still having the capability to reach down to the machine when you need it.</p>
+            </section>
+
+            <section class="prose-section">
+                <h2>Design Principles</h2>
+                <div class="principle-list">
+                    <div class="principle-item">
+                        <h3>1. Syntax should stay calm</h3>
+                        <p>Whether you are writing a web handler, an FFI binding, or a memory allocator, the code should look recognizable and readable. No sudden context switches in visual density.</p>
+                    </div>
+                    <div class="principle-item">
+                        <h3>2. Features should earn their place</h3>
+                        <p>OOP, metadata, blocks, delegates — every feature in Kinal exists because it solves a real problem in real codebases, not because it looks nice in a feature comparison table.</p>
+                    </div>
+                    <div class="principle-item">
+                        <h3>3. One language, full stack</h3>
+                        <p>You should not need to switch to C for FFI, to a different tool for build scripts, or to another language for low-level runtime work. Kinal aims to be the only language you need for an entire project.</p>
+                    </div>
+                    <div class="principle-item">
+                        <h3>4. Native control is not an escape hatch</h3>
+                        <p>FFI, pointer operations, and runtime APIs are first-class citizens in Kinal. They are part of the language design, not afterthoughts bolted on through unsafe blocks or external tooling.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="prose-section">
+                <h2>How is Kinal Different?</h2>
+                <div class="comparison-table-wrapper">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>C / C++</th>
+                                <th>Rust</th>
+                                <th>C# / Java</th>
+                                <th>Kinal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Readable syntax</td>
+                                <td>Limited</td>
+                                <td>Moderate</td>
+                                <td>✓ Clean</td>
+                                <td>✓ Clean</td>
+                            </tr>
+                            <tr>
+                                <td>Native compilation</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                                <td>JIT only</td>
+                                <td>✓ LLVM</td>
+                            </tr>
+                            <tr>
+                                <td>FFI (call C)</td>
+                                <td>Native</td>
+                                <td>unsafe block</td>
+                                <td>P/Invoke / JNI</td>
+                                <td>✓ Built-in</td>
+                            </tr>
+                            <tr>
+                                <td>OOP</td>
+                                <td>Partial</td>
+                                <td>Traits only</td>
+                                <td>✓ Full</td>
+                                <td>✓ Full</td>
+                            </tr>
+                            <tr>
+                                <td>Metadata / Reflection</td>
+                                <td>✗</td>
+                                <td>Limited macros</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                            </tr>
+                            <tr>
+                                <td>Compiler self-hosting</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                                <td>✓</td>
+                                <td>Not fully yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="content-cta">
+                <a class="button primary" href="/what-is-kinal">Learn more about Kinal</a>
+                <a class="button ghost" href="/download">Get the compiler</a>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="shell">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+                    <span>Kinal Programming Language</span>
+                </div>
+                <nav class="footer-links">
+                    <a href="/docs">Docs</a>
+                    <a href="/download">Download</a>
+                    <a href="/what-is-kinal">About</a>
+                    <a href="/faq">FAQ</a>
+                    <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+                </nav>
+                <p class="footer-note">Built with Kinal · © 2026 Kinal Contributors</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function(){
+        var toggle=document.getElementById("topbar-toggle");
+        var topbar=document.querySelector(".topbar");
+        if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open");})}
+        var ls=document.getElementById("locale-switch");
+        var lt=document.getElementById("locale-trigger");
+        if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}
+    })();
+    </script>
+</body>
+
+</html>

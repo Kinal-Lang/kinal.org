@@ -1,0 +1,91 @@
+Unit Kinal.Website;
+
+Get IO.Time;
+Get IO.Host;
+Get IO.File;
+Get IO.Error;
+
+Static Class WebsiteRuntime
+{
+    Static u64 state = 0;
+
+    Public Static Function int RandomInt(int min, int max)
+    {
+        If (max <= min)
+        {
+            Throw New IO.Error("max must be greater than min", "Kinal.Website");
+        }
+
+        If (state == 0)
+        {
+            state = [u64](IO.Time.GetNanoTick());
+        }
+
+        u64 a = 1664525;
+        u64 c = 1013904223;
+        u64 m = 1 << 32;
+
+        state = (a * state + c) % m;
+
+        u64 range = [u64](max - min);
+        Return [int](state % range) + min;
+    }
+
+    Public Static Function string RandomString(int length)
+    {
+        Var chars = [c]"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+        string result = "";
+        For (int i = 0; i < length; i++)
+        {
+            int index = RandomInt(0, chars.Length());
+            result += chars[index];
+        }
+        Return result;
+    }
+
+    Public Static Function bool IsWindowsHost()
+    {
+        int host_os = IO.Host;
+        Return host_os == IO.Host.Windows;
+    }
+
+    Public Static Function string QuoteArgument(string value)
+    {
+        Return [f]"\"{value}\"";
+    }
+
+    Public Static Function string ExecutableFileName(string stem)
+    {
+        Return [f]"{stem}{IO.Host.ExeSuffix}";
+    }
+
+    Public Static Function string ResolvePythonCommand()
+    {
+        If (IsWindowsHost())
+        {
+            Return "python";
+        }
+
+        Return "python3";
+    }
+
+    Public Static Function string ResolveRunnerPath()
+    {
+        string cwd = IO.Path.Cwd();
+        string[] candidates = {
+            WebsitePaths.JoinPath3(cwd, "tools", "runner.py"),
+            WebsitePaths.JoinPath4(cwd, "src", "tools", "runner.py"),
+            WebsitePaths.JoinPath(WebsitePaths.JoinPath4(cwd, "..", "src", "tools"), "runner.py")
+        };
+
+        For (int i = 0; i < candidates.Length(); i++)
+        {
+            If (IO.File.Exists(candidates[i]))
+            {
+                Return candidates[i];
+            }
+        }
+
+        Throw New IO.Error("Unable to locate runner.py", "Kinal.Website");
+    }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>什么是 Kinal？ — 面向系统与应用的现代编程语言</title>
+    <meta name="description" content="Kinal 是一门将可读性语法与原生控制能力相结合的现代编程语言。支持 LLVM 编译、VM 执行、FFI 和丰富的标准库，用于系统、应用和工具开发。">
+    <meta name="keywords" content="什么是 Kinal, Kinal 编程语言, 现代语言, LLVM 语言, 系统编程, FFI 语言">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/zh-CN/what-is-kinal">
+    <meta property="og:title" content="什么是 Kinal？ — 面向系统与应用的现代编程语言">
+    <meta property="og:description" content="Kinal 是一门将可读性语法与原生控制能力相结合的现代编程语言。">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kinal.org/zh-CN/what-is-kinal">
+    <meta property="og:site_name" content="Kinal">
+    <meta property="og:locale" content="zh_CN">
+    <link rel="alternate" hreflang="en" href="https://kinal.org/what-is-kinal">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/what-is-kinal">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/what-is-kinal">
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+</head>
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <a class="brand" href="/zh-CN"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><div><strong>Kinal</strong><span>更干净的语法，更直接的原生控制</span></div></a>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="切换菜单"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/zh-CN">主页</a>
+                <a href="/zh-CN/docs">文档</a>
+                <a href="/zh-CN/download">下载</a>
+                <a href="/zh-CN/what-is-kinal" class="active">关于</a>
+            
+                <a href="/zh-CN/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="locale-label">简体中文</span><span class="locale-caret" aria-hidden="true"></span></button>
+                <div class="locale-menu" id="locale-menu" role="menu"><a class="locale-option" href="/what-is-kinal" data-locale="en" role="menuitem">English</a><a class="locale-option active" href="/zh-CN/what-is-kinal" data-locale="zh-CN" role="menuitem">简体中文</a></div>
+            </div>
+        </div>
+    </header>
+    <main class="shell subpage">
+        <article class="content-page prose-page" id="what-is-kinal-page">
+            <div class="content-header"><p class="eyebrow">关于</p><h1>什么是 Kinal？</h1><p class="content-lead">Kinal 是一门现代通用编程语言，旨在将高级语言的可读性与系统编程的强大控制力结合在一起。</p></div>
+            <section class="prose-section"><h2>核心理念</h2><p>大多数编程语言迫使你在舒适与控制之间做出选择。C# 和 Java 提供干净的语法和丰富的标准库，但在原生内存访问、FFI 和运行时层面的工作中会遇到瓶颈。另一方面，C、C++ 和 Rust 给你完全的硬件控制，但代价是复杂性和可读性。</p><p>Kinal 的目标是弥合这一鸿沟。它提供<strong>统一的语言模型</strong>，无论你编写应用、库、操作系统模块还是图形引擎，代码都保持可读。</p></section>
+            <section class="prose-section"><h2>核心特性</h2>
+                <div class="feature-grid">
+                    <div class="feature-item"><h3>LLVM 编译</h3><p>Kinal 通过 LLVM 编译为原生代码，为 Windows、Linux 和 macOS 生成优化二进制文件。</p></div>
+                    <div class="feature-item"><h3>VM 执行</h3><p>内置虚拟机支持快速开发周期。无需等待完整编译即可立即运行代码。</p></div>
+                    <div class="feature-item"><h3>外部函数接口</h3><p>使用内置的 FFI 系统直接从 Kinal 代码调用 C 库。无需包装生成器或绑定文件。</p></div>
+                    <div class="feature-item"><h3>元数据与反射</h3><p>使用自定义元数据注解类型和成员。在编译期和运行时访问特性信息。</p></div>
+                    <div class="feature-item"><h3>丰富的标准库</h3><p>IO、网络、文件系统、文本处理、时间、Web 服务器 — 内置模块覆盖真实需求。</p></div>
+                    <div class="feature-item"><h3>跨平台</h3><p>一次编写，到处编译。Kinal 以一致的行为和原生性能面向 Windows、Linux 和 macOS。</p></div>
+                </div>
+            </section>
+            <section class="prose-section"><h2>Kinal 适用于谁？</h2><p>Kinal 为以下开发者设计：</p>
+                <ul>
+                    <li>希望一门<strong>可读且高效的语言</strong>，不牺牲底层能力</li>
+                    <li>需要<strong>原生性能</strong>，但不想承担手动内存管理的认知负担</li>
+                    <li>构建<strong>编译器、工具、库或运行时系统</strong>，希望只用一门语言</li>
+                    <li>将<strong>FFI 和系统交互</strong>视为一等特性而非逃生舱口</li>
+                    <li>偏好受 C#、Java 和现代命令式语言影响的<strong>熟悉语法</strong></li>
+                </ul>
+            </section>
+            <section class="prose-section"><h2>真实使用案例</h2><p>Kinal 不仅仅是用于学术研究的玩具语言，它已经在构建真实系统：</p>
+                <ul>
+                    <li><strong>Kinal 本身</strong> — 标准库和 KinalVM 已经由 Kinal 编写，但核心编译器目前仍使用 C 语言编写</li>
+                    <li><strong>kinal.org</strong> — 此网站完全由 Kinal 使用内置 Web 服务器实现</li>
+                    <li><strong>Kinal-OS</strong> — 用 Kinal 编写的操作系统内核</li>
+                    <li><strong>KNGL</strong> — 用 Kinal 构建的图形引擎</li>
+                </ul>
+            </section>
+            <div class="content-cta"><a class="button primary" href="/zh-CN/download">下载 Kinal</a><a class="button ghost" href="/zh-CN/docs">阅读文档</a><a class="button ghost" href="/zh-CN#playground">在线体验</a></div>
+        </article>
+    </main>
+    <footer class="site-footer"><div class="shell"><div class="footer-inner"><div class="footer-brand"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><span>Kinal 编程语言</span></div><nav class="footer-links"><a href="/zh-CN/docs">文档</a><a href="/zh-CN/download">下载</a><a href="/zh-CN/what-is-kinal">关于</a><a href="/zh-CN/faq">FAQ</a><a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><p class="footer-note">由 Kinal 构建 · © 2026 Kinal Contributors</p></div></div></footer>
+    <script>(function(){var toggle=document.getElementById("topbar-toggle");var topbar=document.querySelector(".topbar");if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open")})}var ls=document.getElementById("locale-switch");var lt=document.getElementById("locale-trigger");if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}})();</script>
+</body>
+</html>

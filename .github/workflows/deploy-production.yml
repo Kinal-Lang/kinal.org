@@ -1,0 +1,233 @@
+name: Build and Deploy kinal.org
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "22"
+  KINAL_RELEASE_REPO: "Kinal-Lang/Kinal"
+
+jobs:
+  build-and-deploy:
+    name: Build site and deploy to production
+    runs-on: ubuntu-22.04
+    env:
+      SSH_HOST: ${{ secrets.KINAL_SITE_SSH_HOST }}
+      SSH_PORT: ${{ secrets.KINAL_SITE_SSH_PORT }}
+      SSH_USER: ${{ secrets.KINAL_SITE_SSH_USER }}
+      SSH_PASSWORD: ${{ secrets.KINAL_SITE_SSH_PASSWORD }}
+      SSH_KEY: ${{ secrets.KINAL_SITE_SSH_KEY }}
+    steps:
+      - name: Checkout kinal.org
+        uses: actions/checkout@v4
+
+      - name: Validate deploy configuration
+        id: config
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=0
+          for name in SSH_HOST SSH_USER; do
+            if [ -z "${!name:-}" ]; then
+              echo "::warning::${name} is not configured; deployment will be skipped."
+              missing=1
+            fi
+          done
+          if [ -z "${SSH_PASSWORD:-}" ] && [ -z "${SSH_KEY:-}" ]; then
+            echo "::warning::Either SSH_PASSWORD or SSH_KEY must be configured; deployment will be skipped."
+            missing=1
+          fi
+          if [ "$missing" -eq 0 ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Python
+        if: steps.config.outputs.ready == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Setup Node.js
+        if: steps.config.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Resolve latest Kinal compiler release
+        if: steps.config.outputs.ready == 'true'
+        id: release
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          import json
+          import os
+          from urllib import request
+
+          repo = os.environ["KINAL_RELEASE_REPO"]
+          token = os.environ.get("GITHUB_TOKEN", "").strip()
+          headers = {
+              "Accept": "application/vnd.github+json",
+              "User-Agent": "kinal-org-deploy/1.0",
+          }
+          if token:
+              headers["Authorization"] = f"Bearer {token}"
+
+          req = request.Request(f"https://api.github.com/repos/{repo}/releases/latest", headers=headers)
+          with request.urlopen(req) as response:
+              release = json.loads(response.read().decode("utf-8"))
+
+          preferred_exts = (".tar.xz", ".tar.gz", ".zip")
+          matches = []
+          for asset in release.get("assets") or []:
+              name = str(asset.get("name") or "")
+              lower = name.lower()
+              if "-linux-x64" not in lower:
+                  continue
+              ext_rank = next((index for index, ext in enumerate(preferred_exts) if lower.endswith(ext)), len(preferred_exts))
+              matches.append((ext_rank, lower, asset))
+
+          if not matches:
+              raise SystemExit("no linux-x64 compiler asset found on latest release")
+
+          asset = sorted(matches, key=lambda item: (item[0], item[1]))[0][2]
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              print(f"release_tag={release['tag_name']}", file=output)
+              print(f"asset_name={asset['name']}", file=output)
+              print(f"asset_url={asset['browser_download_url']}", file=output)
+          print(f"Resolved release {release['tag_name']} with asset {asset['name']}")
+          PY
+
+      - name: Download compiler asset
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p downloads
+          curl -L --fail --retry 3 --retry-delay 2 "${{ steps.release.outputs.asset_url }}" -o "downloads/${{ steps.release.outputs.asset_name }}"
+
+      - name: Extract compiler bundle
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python <<'PY'
+          import os
+          import pathlib
+          import shutil
+          import tarfile
+          import zipfile
+
+          asset_name = os.environ["ASSET_NAME"]
+          archive = pathlib.Path("downloads") / asset_name
+          extract_root = pathlib.Path("compiler-extract")
+          if extract_root.exists():
+              shutil.rmtree(extract_root)
+          extract_root.mkdir(parents=True)
+
+          if asset_name.lower().endswith(".zip"):
+              with zipfile.ZipFile(archive) as bundle:
+                  bundle.extractall(extract_root)
+          else:
+              with tarfile.open(archive, "r:*") as bundle:
+                  bundle.extractall(extract_root)
+
+          entries = [path for path in sorted(extract_root.iterdir()) if path.name != "__MACOSX"]
+          compiler_root = entries[0] if len(entries) == 1 and entries[0].is_dir() else extract_root
+
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as env:
+              print(f"COMPILER_ROOT={compiler_root.resolve()}", file=env)
+          print(f"Compiler root: {compiler_root.resolve()}")
+          PY
+        env:
+          ASSET_NAME: ${{ steps.release.outputs.asset_name }}
+
+      - name: Configure compiler environment
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "KINAL_HOME=$COMPILER_ROOT" >> "$GITHUB_ENV"
+          echo "KINAL_PATH=$COMPILER_ROOT/kinal" >> "$GITHUB_ENV"
+          echo "$COMPILER_ROOT" >> "$GITHUB_PATH"
+
+      - name: Build kinal.org
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python build.py
+
+      - name: Package deploy bundles
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p deploy
+          tar -czf deploy/kinal-org-site.tar.gz -C build .
+          tar -czf deploy/kinal-compiler.tar.gz -C "$COMPILER_ROOT" .
+
+      - name: Upload build artifacts
+        if: steps.config.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: kinal-org-deploy-bundles
+          path: |
+            deploy/kinal-org-site.tar.gz
+            deploy/kinal-compiler.tar.gz
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Install Paramiko
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          python -m pip install paramiko
+
+      - name: Prepare SSH key file
+        if: steps.config.outputs.ready == 'true' && env.SSH_KEY != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP"
+          key_path="$RUNNER_TEMP/kinal-site.key"
+          printf '%s\n' "$SSH_KEY" > "$key_path"
+          chmod 600 "$key_path"
+          echo "SSH_KEY_FILE=$key_path" >> "$GITHUB_ENV"
+
+      - name: Deploy to production
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          site_release="${{ steps.release.outputs.release_tag }}-run-${{ github.run_id }}"
+          deploy_args=(
+            --host "$SSH_HOST"
+            --port "${SSH_PORT:-22}"
+            --user "$SSH_USER"
+            --site-archive deploy/kinal-org-site.tar.gz
+            --site-release "$site_release"
+            --compiler-archive deploy/kinal-compiler.tar.gz
+            --compiler-release "${{ steps.release.outputs.release_tag }}"
+            --service-name kinal-org.service
+          )
+          if [ -n "${SSH_KEY_FILE:-}" ]; then
+            deploy_args+=(--key-file "$SSH_KEY_FILE")
+          else
+            deploy_args+=(--password "$SSH_PASSWORD")
+          fi
+          python scripts/deploy_remote.py "${deploy_args[@]}"
+
+      - name: Deployment skipped
+        if: steps.config.outputs.ready != 'true'
+        run: echo "Deployment skipped because required secrets are not configured."

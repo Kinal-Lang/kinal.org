@@ -1,0 +1,19 @@
+Unit App;
+
+Get Console By IO.Console;
+
+Static Function int Main()
+{
+    IO.Type.Object.Block flow = Block Flow </
+    Console.PrintLine("flow-1");
+    Record A
+    Console.PrintLine("flow-2");
+    Record B
+    Console.PrintLine("flow-3");
+    />;
+
+    flow.RunUntil(flow.B);
+    flow.JumpAndRunUntil(flow.A, flow.B);
+    Console.PrintLine(flow.B);
+    Return 0;
+}

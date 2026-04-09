@@ -1,0 +1,20 @@
+Unit App;
+
+Get Console By IO.Console;
+Get IO.Meta;
+
+Meta Demo(string value)
+{
+    On @function;
+    Keep @runtime;
+}
+
+[Demo("playground")]
+Static Function int Main()
+{
+    dict item = IO.Meta.Find(Main, "Demo");
+    Console.PrintLine(IO.Meta.Has(Main, "Demo"));
+    Console.PrintLine([string](item.Fetch("arg.value")));
+    Console.PrintLine([string](item.Fetch("owner")));
+    Return 0;
+}

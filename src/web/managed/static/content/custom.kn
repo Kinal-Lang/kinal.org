@@ -1,0 +1,9 @@
+Unit App;
+
+Get IO.Console;
+
+Static Function int Main()
+{
+    IO.Console.PrintLine("Start from here.");
+    Return 0;
+}

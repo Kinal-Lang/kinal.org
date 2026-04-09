@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Download Kinal — Compiler Releases &amp; Builds</title>
+    <meta name="description"
+        content="Download the latest Kinal compiler and runtime. Browse all releases with changelogs, download archives for Windows, Linux, and macOS.">
+    <meta name="keywords" content="Kinal download, Kinal compiler, Kinal release, Kinal install, programming language download">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/download">
+
+    <meta property="og:title" content="Download Kinal — Compiler Releases & Builds">
+    <meta property="og:description" content="Download the latest Kinal compiler and runtime. Browse releases with changelogs and platform archives.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kinal.org/download">
+    <meta property="og:site_name" content="Kinal">
+
+    <link rel="alternate" hreflang="en" href="https://kinal.org/download">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/download">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/download">
+
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+</head>
+
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div>
+                <strong>Kinal</strong>
+                <span>cleaner syntax, native control, one language model</span>
+            </div>
+        </a>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/">Home</a>
+                <a href="/docs">Docs</a>
+                <a href="/download" class="active">Download</a>
+                <a href="/what-is-kinal">About</a>
+            
+                <a href="/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="locale-label">English</span>
+                    <span class="locale-caret" aria-hidden="true"></span>
+                </button>
+                <div class="locale-menu" id="locale-menu" role="menu">
+                    <a class="locale-option active" href="/download" data-locale="en" role="menuitem">English</a>
+                    <a class="locale-option" href="/zh-CN/download" data-locale="zh-CN" role="menuitem">简体中文</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell subpage">
+        <article class="content-page" id="download-page">
+            <div class="content-header">
+                <p class="eyebrow">Releases</p>
+                <h1>Download Kinal</h1>
+                <p class="content-lead">Get the latest Kinal compiler and runtime for your platform. Each release includes the compiler, VM, and standard library.</p>
+            </div>
+
+            <div id="releases-container" class="releases-container">
+                <div class="releases-loading" id="releases-loading">
+                    <div class="spinner"></div>
+                    <p>Loading releases…</p>
+                </div>
+            </div>
+
+            <div class="content-footer">
+                <p>All releases are also available on <a href="https://github.com/Kinal-Lang/Kinal/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a>.</p>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="shell">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+                    <span>Kinal Programming Language</span>
+                </div>
+                <nav class="footer-links">
+                    <a href="/docs">Docs</a>
+                    <a href="/download">Download</a>
+                    <a href="/what-is-kinal">About</a>
+                    <a href="/faq">FAQ</a>
+                    <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+                </nav>
+                <p class="footer-note">Built with Kinal · © 2026 Kinal Contributors</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function(){
+        var toggle=document.getElementById("topbar-toggle");
+        var topbar=document.querySelector(".topbar");
+        if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open");})}
+        var ls=document.getElementById("locale-switch");
+        var lt=document.getElementById("locale-trigger");
+        if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}
+
+        var container=document.getElementById("releases-container");
+        var loading=document.getElementById("releases-loading");
+
+        function escapeHtml(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+        function formatDate(iso){
+            try{var d=new Date(iso);return d.toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}catch(e){return iso}
+        }
+
+        function formatSize(bytes){
+            if(bytes<1024)return bytes+" B";
+            if(bytes<1048576)return (bytes/1024).toFixed(1)+" KB";
+            return (bytes/1048576).toFixed(1)+" MB";
+        }
+
+        function platformIcon(name){
+            var n=name.toLowerCase();
+            if(n.indexOf("linux")>=0) return "🐧";
+            if(n.indexOf("win")>=0||n.indexOf("windows")>=0) return "🪟";
+            if(n.indexOf("mac")>=0||n.indexOf("darwin")>=0) return "🍎";
+            if(n.indexOf("sha256")>=0||n.indexOf("checksum")>=0) return "🔒";
+            return "📦";
+        }
+
+        function simpleMarkdown(md){
+            if(!md)return "";
+            var lines=md.split("\n");
+            var html="";
+            var inList=false;
+            for(var i=0;i<lines.length;i++){
+                var line=lines[i];
+                if(/^###\s/.test(line)){
+                    if(inList){html+="</ul>";inList=false}
+                    html+="<h4>"+escapeHtml(line.replace(/^###\s/,""))+"</h4>";
+                }else if(/^##\s/.test(line)){
+                    if(inList){html+="</ul>";inList=false}
+                    html+="<h3>"+escapeHtml(line.replace(/^##\s/,""))+"</h3>";
+                }else if(/^[-*]\s/.test(line)){
+                    if(!inList){html+="<ul>";inList=true}
+                    html+="<li>"+escapeHtml(line.replace(/^[-*]\s/,""))+"</li>";
+                }else if(line.trim()===""){
+                    if(inList){html+="</ul>";inList=false}
+                }else{
+                    if(inList){html+="</ul>";inList=false}
+                    html+="<p>"+escapeHtml(line)+"</p>";
+                }
+            }
+            if(inList)html+="</ul>";
+            return html;
+        }
+
+        function renderReleases(data){
+            loading.style.display="none";
+            var releases=data.releases||[];
+            if(releases.length===0){
+                container.innerHTML='<div class="releases-empty"><p>No releases available yet. Check back soon!</p></div>';
+                return;
+            }
+            var html="";
+            for(var i=0;i<releases.length;i++){
+                var rel=releases[i];
+                var isLatest=i===0;
+                html+='<div class="release-card'+(isLatest?" release-latest":"")+'" id="release-'+escapeHtml(rel.tag_name)+'">';
+                html+='<div class="release-header">';
+                html+='<div class="release-title-row">';
+                html+='<h2>'+escapeHtml(rel.name||rel.tag_name)+'</h2>';
+                if(isLatest)html+='<span class="release-badge">Latest</span>';
+                if(rel.prerelease)html+='<span class="release-badge release-badge-pre">Pre-release</span>';
+                html+='</div>';
+                html+='<div class="release-meta">';
+                html+='<span class="release-tag">'+escapeHtml(rel.tag_name)+'</span>';
+                html+='<span class="release-date">'+formatDate(rel.published_at)+'</span>';
+                if(rel.html_url)html+='<a class="release-gh-link" href="'+escapeHtml(rel.html_url)+'" target="_blank" rel="noopener noreferrer">View on GitHub →</a>';
+                html+='</div>';
+                html+='</div>';
+
+                if(rel.body_markdown){
+                    html+='<div class="release-body">'+simpleMarkdown(rel.body_markdown)+'</div>';
+                }
+
+                var assets=rel.assets||[];
+                if(assets.length>0){
+                    html+='<div class="release-assets">';
+                    html+='<h3>Downloads</h3>';
+                    html+='<div class="asset-list">';
+                    for(var j=0;j<assets.length;j++){
+                        var asset=assets[j];
+                        html+='<a class="asset-item" href="'+escapeHtml(asset.download_url)+'" download>';
+                        html+='<span class="asset-icon">'+platformIcon(asset.name)+'</span>';
+                        html+='<span class="asset-info">';
+                        html+='<span class="asset-name">'+escapeHtml(asset.name)+'</span>';
+                        html+='<span class="asset-size">'+formatSize(asset.size_bytes)+'</span>';
+                        html+='</span>';
+                        html+='<span class="asset-dl">↓</span>';
+                        html+='</a>';
+                    }
+                    html+='</div>';
+                    html+='</div>';
+                }
+                html+='</div>';
+            }
+            container.innerHTML=html;
+        }
+
+        fetch("/static/data/releases.json",{cache:"no-store"})
+            .then(function(r){
+                if(!r.ok)throw new Error("HTTP "+r.status);
+                return r.json()
+            })
+            .then(renderReleases)
+            .catch(function(err){
+                loading.style.display="none";
+                container.innerHTML='<div class="releases-empty"><p>Unable to load release data. Visit <a href="https://github.com/Kinal-Lang/Kinal/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a> directly.</p></div>';
+            });
+    })();
+    </script>
+</body>
+
+</html>

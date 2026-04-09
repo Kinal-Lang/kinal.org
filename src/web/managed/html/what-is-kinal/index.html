@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>What is Kinal? — A Modern Programming Language for Systems and Applications</title>
+    <meta name="description"
+        content="Kinal is a modern programming language combining readable syntax with native control. It features LLVM compilation, VM execution, FFI, and a rich standard library for building systems, applications, and tools.">
+    <meta name="keywords" content="what is Kinal, Kinal programming language, modern language, LLVM language, systems programming, FFI language">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://kinal.org/what-is-kinal">
+
+    <meta property="og:title" content="What is Kinal? — A Modern Programming Language">
+    <meta property="og:description" content="Kinal is a modern programming language combining readable syntax with native control. LLVM, VM, FFI, and more.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://kinal.org/what-is-kinal">
+    <meta property="og:site_name" content="Kinal">
+
+    <link rel="alternate" hreflang="en" href="https://kinal.org/what-is-kinal">
+    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/what-is-kinal">
+    <link rel="alternate" hreflang="x-default" href="https://kinal.org/what-is-kinal">
+
+    <link rel="icon" href="/static/logo.png">
+    <link rel="stylesheet" href="/static/site.css?v=20260409a">
+</head>
+
+<body>
+    <div class="page-bg" aria-hidden="true"></div>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div>
+                <strong>Kinal</strong>
+                <span>cleaner syntax, native control, one language model</span>
+            </div>
+        </a>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="Toggle menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="topbar-actions">
+            <nav class="topnav">
+                <a href="/">Home</a>
+                <a href="/docs">Docs</a>
+                <a href="/download">Download</a>
+                <a href="/what-is-kinal" class="active">About</a>
+            
+                <a href="/faq">FAQ</a>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav>
+            <div class="locale-switch" id="locale-switch">
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="locale-label">English</span>
+                    <span class="locale-caret" aria-hidden="true"></span>
+                </button>
+                <div class="locale-menu" id="locale-menu" role="menu">
+                    <a class="locale-option active" href="/what-is-kinal" data-locale="en" role="menuitem">English</a>
+                    <a class="locale-option" href="/zh-CN/what-is-kinal" data-locale="zh-CN" role="menuitem">简体中文</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell subpage">
+        <article class="content-page prose-page" id="what-is-kinal-page">
+            <div class="content-header">
+                <p class="eyebrow">About</p>
+                <h1>What is Kinal?</h1>
+                <p class="content-lead">Kinal is a modern, general-purpose programming language designed to combine the readability of high-level languages with the power and control of systems programming.</p>
+            </div>
+
+            <section class="prose-section">
+                <h2>The Core Idea</h2>
+                <p>Most programming languages force you to choose between comfort and control. Languages like C# and Java provide clean syntax, rich standard libraries, and productive tooling — but they stop short of native memory access, FFI, and runtime-level work. On the other hand, C, C++, and Rust give you full hardware control, but at the cost of complexity and readability.</p>
+                <p>Kinal exists to close this gap. It provides a <strong>single, unified language model</strong> that stays readable whether you are writing an application, a library, an OS module, or a graphics engine.</p>
+            </section>
+
+            <section class="prose-section">
+                <h2>Key Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h3>LLVM Compilation</h3>
+                        <p>Kinal compiles to native code via LLVM, producing optimized binaries for Windows, Linux, and macOS across multiple architectures.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>VM Execution</h3>
+                        <p>A custom virtual machine allows rapid development cycles. Run code immediately without waiting for full compilation.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Foreign Function Interface</h3>
+                        <p>Call C libraries directly from Kinal code using the built-in FFI system. No wrapper generators, no binding files — just declare and call.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Metadata &amp; Reflection</h3>
+                        <p>Annotate types and members with custom metadata. Access attribute information at both compile-time and runtime for powerful metaprogramming.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Rich Standard Library</h3>
+                        <p>IO, networking, file system, text processing, time, web server — built-in modules that cover real-world needs without third-party dependencies.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3>Cross-Platform</h3>
+                        <p>Write once, compile everywhere. Kinal targets Windows, Linux, and macOS with consistent behavior and native performance.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="prose-section">
+                <h2>Who is Kinal For?</h2>
+                <p>Kinal is designed for developers who:</p>
+                <ul>
+                    <li>Want a <strong>readable, productive language</strong> that does not sacrifice low-level capability</li>
+                    <li>Need <strong>native performance</strong> without the cognitive overhead of manual memory management</li>
+                    <li>Build <strong>compilers, tools, libraries, or runtime systems</strong> and want to stay in one language</li>
+                    <li>Want <strong>FFI and system interop</strong> as first-class features, not escape hatches</li>
+                    <li>Prefer a <strong>familiar syntax</strong> influenced by C#, Java, and modern imperative languages</li>
+                </ul>
+            </section>
+
+            <section class="prose-section">
+                <h2>Real-World Use</h2>
+                <p>Kinal is not a toy language created for academic exploration. It is being used to build real systems:</p>
+                <ul>
+                    <li><strong>Kinal itself</strong> — the standard library and KinalVM are written in Kinal, while the core compiler is still written in C today</li>
+                    <li><strong>kinal.org</strong> — this website is fully implemented in Kinal using its built-in web server</li>
+                    <li><strong>Kinal-OS</strong> — an operating system kernel written in Kinal</li>
+                    <li><strong>KNGL</strong> — a graphics engine built with Kinal</li>
+                </ul>
+            </section>
+
+            <div class="content-cta">
+                <a class="button primary" href="/download">Download Kinal</a>
+                <a class="button ghost" href="/docs">Read the Docs</a>
+                <a class="button ghost" href="/#playground">Try Online</a>
+            </div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="shell">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+                    <span>Kinal Programming Language</span>
+                </div>
+                <nav class="footer-links">
+                    <a href="/docs">Docs</a>
+                    <a href="/download">Download</a>
+                    <a href="/what-is-kinal">About</a>
+                    <a href="/faq">FAQ</a>
+                    <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+                </nav>
+                <p class="footer-note">Built with Kinal · © 2026 Kinal Contributors</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function(){
+        var toggle=document.getElementById("topbar-toggle");
+        var topbar=document.querySelector(".topbar");
+        if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open");})}
+        var ls=document.getElementById("locale-switch");
+        var lt=document.getElementById("locale-trigger");
+        if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}
+    })();
+    </script>
+</body>
+
+</html>
