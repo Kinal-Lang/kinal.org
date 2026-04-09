@@ -159,6 +159,19 @@ jobs:
           echo "KINAL_PATH=$COMPILER_ROOT/kinal" >> "$GITHUB_ENV"
           echo "$COMPILER_ROOT" >> "$GITHUB_PATH"
 
+      - name: Generate releases.json for download page
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python scripts/release_feed.py generate \
+            --repo "${{ env.KINAL_RELEASE_REPO }}" \
+            --limit 16 \
+            --token-env GITHUB_TOKEN \
+            --output src/web/managed/static/data/releases.json
+
       - name: Build kinal.org
         if: steps.config.outputs.ready == 'true'
         shell: bash

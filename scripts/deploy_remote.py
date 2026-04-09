@@ -208,6 +208,11 @@ install_site_bundle() {
   rm -rf "$site_dir/temp"
   ln -sfn "$TEMP_ROOT" "$site_dir/temp"
   chown -h "$SERVICE_USER:$SERVICE_GROUP" "$site_dir/temp"
+
+  preserve_existing_release_feed \
+    "$site_dir/managed/static/data/releases.json" \
+    "$STATIC_ROOT/current/static/data/releases.json"
+
   chown -R "$SERVICE_USER:$SERVICE_GROUP" "$site_dir"
 
   cp -a "$site_dir/managed"/. "$static_dir"/
@@ -336,6 +341,47 @@ cleanup_uploads() {
   if [ -n "$COMPILER_ARCHIVE_PATH" ]; then
     rm -f "$COMPILER_ARCHIVE_PATH"
   fi
+}
+
+release_feed_has_entries() {
+  local path="$1"
+  if [ ! -f "$path" ]; then
+    return 1
+  fi
+  python3 - "$path" <<'PY'
+import json
+import pathlib
+import sys
+
+path = pathlib.Path(sys.argv[1])
+try:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+except Exception:
+    raise SystemExit(1)
+
+releases = payload.get("releases")
+if isinstance(releases, list) and releases:
+    raise SystemExit(0)
+raise SystemExit(1)
+PY
+}
+
+preserve_existing_release_feed() {
+  local incoming_feed="$1"
+  local current_feed="$2"
+
+  if release_feed_has_entries "$incoming_feed"; then
+    return 0
+  fi
+
+  if release_feed_has_entries "$current_feed"; then
+    mkdir -p "$(dirname "$incoming_feed")"
+    cp -a "$current_feed" "$incoming_feed"
+    echo "preserved existing release feed: $current_feed"
+    return 0
+  fi
+
+  echo "warning: incoming release feed is empty and no current feed could be preserved" >&2
 }
 
 main() {
