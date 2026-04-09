@@ -20,24 +20,60 @@
     <link rel="alternate" hreflang="x-default" href="https://kinal.org/download">
     <link rel="icon" href="/static/logo.png">
     <link rel="stylesheet" href="/static/site.css?v=20260409a">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github-dark.min.css">
+    <style>
+        .docs-rendered pre code.hljs { background: transparent; padding: 16px; font-size: 0.85rem; line-height: 1.6; }
+        .docs-rendered .hljs-keyword { color: #ff7b72; }
+        .docs-rendered .hljs-type { color: #79c0ff; }
+        .docs-rendered .hljs-string { color: #a5d6ff; }
+        .docs-rendered .hljs-comment { color: #636e7b; font-style: italic; }
+        .docs-rendered .hljs-number { color: #d2a8ff; }
+        .docs-rendered .hljs-literal { color: #ffa657; }
+        .docs-rendered .hljs-built_in { color: #7ee787; }
+        .docs-rendered .hljs-title { color: #dcdcaa; }
+        .docs-rendered table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 24px 0; border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden; }
+        .docs-rendered th, .docs-rendered td { padding: 12px 16px; text-align: left; font-size: 0.88rem; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); }
+        .docs-rendered th:last-child, .docs-rendered td:last-child { border-right: none; }
+        .docs-rendered th { background: rgba(240, 246, 252, 0.04); color: var(--ink-soft); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--line); }
+        .docs-rendered td { color: var(--ink-soft); background: var(--bg-card); }
+        .docs-rendered tr:last-child td { border-bottom: none; }
+        .docs-rendered .code-block-wrapper { margin: 24px 0; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg-card); overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+        .docs-rendered .code-block-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: rgba(240, 246, 252, 0.04); border-bottom: 1px solid var(--line); font-size: 0.75rem; }
+        .docs-rendered .code-block-lang { color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+        .docs-rendered .code-block-copy { background: transparent; border: 1px solid var(--line); color: var(--ink-soft); border-radius: 4px; padding: 4px 10px; cursor: pointer; transition: all 0.2s; font-size: 0.75rem; line-height: 1; }
+        .docs-rendered .code-block-copy:hover { color: var(--ink); border-color: rgba(240, 246, 252, 0.2); background: rgba(240, 246, 252, 0.06); }
+        .docs-rendered pre { margin: 0; background: transparent; }
+        .docs-rendered pre code { display: block; overflow-x: auto; }
+    </style>
 </head>
 
 <body>
     <div class="page-bg" aria-hidden="true"></div>
     <header class="topbar">
-        <a class="brand" href="/zh-CN"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><div><strong>Kinal</strong><span>更干净的语法，更直接的原生控制</span></div></a>
-        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="切换菜单"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <a class="brand" href="/zh-CN">
+            <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+            <div><strong>Kinal</strong><span>更干净的语法，更直接的原生控制</span></div>
+        </a>
+        <button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="切换菜单">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
         <div class="topbar-actions">
             <nav class="topnav">
                 <a href="/zh-CN">主页</a>
                 <a href="/zh-CN/docs">文档</a>
                 <a href="/zh-CN/download" class="active">下载</a>
                 <a href="/zh-CN/what-is-kinal">关于</a>
-            
                 <a href="/zh-CN/faq">FAQ</a>
-                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav>
+                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </nav>
             <div class="locale-switch" id="locale-switch">
-                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="locale-label">简体中文</span><span class="locale-caret" aria-hidden="true"></span></button>
+                <button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="locale-label">简体中文</span><span class="locale-caret" aria-hidden="true"></span>
+                </button>
                 <div class="locale-menu" id="locale-menu" role="menu">
                     <a class="locale-option" href="/download" data-locale="en" role="menuitem">English</a>
                     <a class="locale-option active" href="/zh-CN/download" data-locale="zh-CN" role="menuitem">简体中文</a>
@@ -54,34 +90,274 @@
                 <p class="content-lead">获取适合你平台的最新 Kinal 编译器和运行时。每个发行版都包含编译器、虚拟机和标准库。</p>
             </div>
             <div id="releases-container" class="releases-container">
-                <div class="releases-loading" id="releases-loading"><div class="spinner"></div><p>正在加载发行版…</p></div>
+                <div class="releases-loading" id="releases-loading">
+                    <div class="spinner"></div>
+                    <p>正在加载发行版…</p>
+                </div>
             </div>
-            <div class="content-footer"><p>所有发行版也可以在 <a href="https://github.com/Kinal-Lang/Kinal/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a> 上获取。</p></div>
+            <div class="content-footer">
+                <p>所有发行版也可以在 <a href="https://github.com/Kinal-Lang/Kinal/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a> 上获取。</p>
+            </div>
         </article>
     </main>
 
-    <footer class="site-footer"><div class="shell"><div class="footer-inner">
-        <div class="footer-brand"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><span>Kinal 编程语言</span></div>
-        <nav class="footer-links"><a href="/zh-CN/docs">文档</a><a href="/zh-CN/download">下载</a><a href="/zh-CN/what-is-kinal">关于</a><a href="/zh-CN/faq">FAQ</a><a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav>
-        <p class="footer-note">由 Kinal 构建 · © 2026 Kinal Contributors</p>
-    </div></div></footer>
+    <footer class="site-footer">
+        <div class="shell">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <img class="brand-mark" src="/static/logo.png" alt="Kinal Logo">
+                    <span>Kinal 编程语言</span>
+                </div>
+                <nav class="footer-links">
+                    <a href="/zh-CN/docs">文档</a>
+                    <a href="/zh-CN/download">下载</a>
+                    <a href="/zh-CN/what-is-kinal">关于</a>
+                    <a href="/zh-CN/faq">FAQ</a>
+                    <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a>
+                </nav>
+                <p class="footer-note">由 Kinal 构建 · © 2026 Kinal Contributors</p>
+            </div>
+        </div>
+    </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/marked@13/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/cpp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/c.min.js"></script>
+    <script src="/static/kinal-highlight.js"></script>
     <script>
     (function(){
-        var toggle=document.getElementById("topbar-toggle");var topbar=document.querySelector(".topbar");
-        if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open")})}
-        var ls=document.getElementById("locale-switch");var lt=document.getElementById("locale-trigger");
-        if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}
+        var toggle = document.getElementById("topbar-toggle");
+        var topbar = document.querySelector(".topbar");
+        if (toggle && topbar) {
+            toggle.addEventListener("click", function(){ topbar.classList.toggle("menu-open"); });
+        }
 
-        var container=document.getElementById("releases-container");
-        var loading=document.getElementById("releases-loading");
-        function escapeHtml(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
-        function formatDate(iso){try{var d=new Date(iso);return d.toLocaleDateString("zh-CN",{year:"numeric",month:"long",day:"numeric"})}catch(e){return iso}}
-        function formatSize(bytes){if(bytes<1024)return bytes+" B";if(bytes<1048576)return (bytes/1024).toFixed(1)+" KB";return (bytes/1048576).toFixed(1)+" MB"}
-        function platformIcon(name){var n=name.toLowerCase();if(n.indexOf("linux")>=0)return "🐧";if(n.indexOf("win")>=0)return "🪟";if(n.indexOf("mac")>=0||n.indexOf("darwin")>=0)return "🍎";if(n.indexOf("sha256")>=0)return "🔒";return "📦"}
-        function simpleMarkdown(md){if(!md)return "";var lines=md.split("\n");var html="";var inList=false;for(var i=0;i<lines.length;i++){var line=lines[i];if(/^###\s/.test(line)){if(inList){html+="</ul>";inList=false}html+="<h4>"+escapeHtml(line.replace(/^###\s/,""))+"</h4>"}else if(/^##\s/.test(line)){if(inList){html+="</ul>";inList=false}html+="<h3>"+escapeHtml(line.replace(/^##\s/,""))+"</h3>"}else if(/^[-*]\s/.test(line)){if(!inList){html+="<ul>";inList=true}html+="<li>"+escapeHtml(line.replace(/^[-*]\s/,""))+"</li>"}else if(line.trim()===""){if(inList){html+="</ul>";inList=false}}else{if(inList){html+="</ul>";inList=false}html+="<p>"+escapeHtml(line)+"</p>"}}if(inList)html+="</ul>";return html}
-        function renderReleases(data){loading.style.display="none";var releases=data.releases||[];if(releases.length===0){container.innerHTML='<div class="releases-empty"><p>暂无可用的发行版，请稍后再来查看！</p></div>';return}var html="";for(var i=0;i<releases.length;i++){var rel=releases[i];var isLatest=i===0;html+='<div class="release-card'+(isLatest?" release-latest":"")+'" id="release-'+escapeHtml(rel.tag_name)+'">';html+='<div class="release-header">';html+='<div class="release-title-row">';html+='<h2>'+escapeHtml(rel.name||rel.tag_name)+'</h2>';if(isLatest)html+='<span class="release-badge">最新</span>';if(rel.prerelease)html+='<span class="release-badge release-badge-pre">预发行</span>';html+='</div>';html+='<div class="release-meta">';html+='<span class="release-tag">'+escapeHtml(rel.tag_name)+'</span>';html+='<span class="release-date">'+formatDate(rel.published_at)+'</span>';if(rel.html_url)html+='<a class="release-gh-link" href="'+escapeHtml(rel.html_url)+'" target="_blank" rel="noopener noreferrer">在 GitHub 查看 →</a>';html+='</div>';html+='</div>';if(rel.body_markdown){html+='<div class="release-body">'+simpleMarkdown(rel.body_markdown)+'</div>'}var assets=rel.assets||[];if(assets.length>0){html+='<div class="release-assets">';html+='<h3>下载</h3>';html+='<div class="asset-list">';for(var j=0;j<assets.length;j++){var asset=assets[j];html+='<a class="asset-item" href="'+escapeHtml(asset.download_url)+'" download>';html+='<span class="asset-icon">'+platformIcon(asset.name)+'</span>';html+='<span class="asset-info">';html+='<span class="asset-name">'+escapeHtml(asset.name)+'</span>';html+='<span class="asset-size">'+formatSize(asset.size_bytes)+'</span>';html+='</span>';html+='<span class="asset-dl">↓</span>';html+='</a>'}html+='</div>';html+='</div>'}html+='</div>'}container.innerHTML=html}
-        fetch("/static/data/releases.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}).then(renderReleases).catch(function(){loading.style.display="none";container.innerHTML='<div class="releases-empty"><p>无法加载发行版数据。请直接访问 <a href="https://github.com/Kinal-Lang/Kinal/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a>。</p></div>'});
+        var localeSwitch = document.getElementById("locale-switch");
+        var localeTrigger = document.getElementById("locale-trigger");
+        if (localeSwitch && localeTrigger) {
+            localeTrigger.addEventListener("click", function(e){
+                e.stopPropagation();
+                localeSwitch.classList.toggle("open");
+            });
+            document.addEventListener("click", function(){ localeSwitch.classList.remove("open"); });
+        }
+
+        marked.setOptions({
+            gfm: true,
+            breaks: false,
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try { return hljs.highlight(code, { language: lang }).value; } catch (e) {}
+                }
+                try { return hljs.highlightAuto(code).value; } catch (e) { return code; }
+            }
+        });
+
+        var container = document.getElementById("releases-container");
+        var loading = document.getElementById("releases-loading");
+
+        function escapeHtml(text) {
+            return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function escapeAttr(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/"/g, "&quot;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function formatDate(iso) {
+            try {
+                var d = new Date(iso);
+                return d.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" });
+            } catch (e) {
+                return iso;
+            }
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + " B";
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+            return (bytes / 1048576).toFixed(1) + " MB";
+        }
+
+        function platformIconPath(name) {
+            var lower = name.toLowerCase();
+            if (lower.indexOf("sha256") >= 0 || lower.indexOf("checksum") >= 0 || /\.txt$/i.test(lower)) return "/static/download-icons/lock.png";
+            if (lower.indexOf("linux") >= 0) return "/static/download-icons/linux.png";
+            if (lower.indexOf("win") >= 0 || lower.indexOf("windows") >= 0) return "/static/download-icons/windows.png";
+            if (lower.indexOf("mac") >= 0 || lower.indexOf("darwin") >= 0) return "/static/download-icons/apple.png";
+            return "/static/download-icons/lock.png";
+        }
+
+        function platformIconAlt(name) {
+            var lower = name.toLowerCase();
+            if (lower.indexOf("sha256") >= 0 || lower.indexOf("checksum") >= 0 || /\.txt$/i.test(lower)) return "校验文件";
+            if (lower.indexOf("linux") >= 0) return "Linux";
+            if (lower.indexOf("win") >= 0 || lower.indexOf("windows") >= 0) return "Windows";
+            if (lower.indexOf("mac") >= 0 || lower.indexOf("darwin") >= 0) return "macOS";
+            return "下载文件";
+        }
+
+        function enhanceCodeBlocks(scope, copyLabel, copiedLabel) {
+            var pres = scope.querySelectorAll("pre");
+            for (var i = 0; i < pres.length; i++) {
+                var pre = pres[i];
+                if (pre.parentNode && pre.parentNode.classList && pre.parentNode.classList.contains("code-block-wrapper")) continue;
+
+                var codeEl = pre.querySelector("code");
+                if (!codeEl) continue;
+
+                codeEl.innerHTML = codeEl.innerHTML.replace(/^\s*\n/, "");
+
+                var langMatch = codeEl.className.match(/language-([a-zA-Z0-9_-]+)/);
+                var langText = langMatch ? langMatch[1] : "text";
+
+                var wrapper = document.createElement("div");
+                wrapper.className = "code-block-wrapper";
+
+                var header = document.createElement("div");
+                header.className = "code-block-header";
+
+                var langSpan = document.createElement("span");
+                langSpan.className = "code-block-lang";
+                langSpan.textContent = langText === "kinal" ? "Kinal" : langText;
+
+                var copyBtn = document.createElement("button");
+                copyBtn.className = "code-block-copy";
+                copyBtn.type = "button";
+                copyBtn.textContent = copyLabel;
+                (function(textToCopy, button){
+                    button.onclick = function() {
+                        navigator.clipboard.writeText(textToCopy).then(function(){
+                            var oldText = button.textContent;
+                            button.textContent = copiedLabel;
+                            setTimeout(function(){ button.textContent = oldText; }, 2000);
+                        });
+                    };
+                })(codeEl.textContent, copyBtn);
+
+                header.appendChild(langSpan);
+                header.appendChild(copyBtn);
+                pre.parentNode.insertBefore(wrapper, pre);
+                wrapper.appendChild(header);
+                wrapper.appendChild(pre);
+
+                if (langText === "kinal" || langText === "kn") {
+                    if (window.highlightKinal) {
+                        codeEl.innerHTML = window.highlightKinal(codeEl.textContent);
+                        codeEl.classList.add("hljs");
+                        codeEl.style.backgroundColor = "transparent";
+                        codeEl.parentElement.style.backgroundColor = "transparent";
+                    }
+                } else if (!codeEl.classList.contains("hljs") && window.hljs) {
+                    hljs.highlightElement(codeEl);
+                    if (langText === "bash" || langText === "sh") {
+                        codeEl.innerHTML = codeEl.innerHTML
+                            .replace(/\b(kinal)\b/g, '<span class="token-namespace">$1</span>')
+                            .replace(/\b(build|run|fmt|test|new|pkg)\b/g, '<span class="token-funcname">$1</span>')
+                            .replace(/(\s-[a-zA-Z0-9-]+)(\s|$)/g, '<span class="token-number">$1</span>$2');
+                    }
+                }
+            }
+
+            var links = scope.querySelectorAll("a");
+            for (var j = 0; j < links.length; j++) {
+                var href = links[j].getAttribute("href");
+                if (href && /^https?:\/\//i.test(href)) {
+                    links[j].setAttribute("target", "_blank");
+                    links[j].setAttribute("rel", "noopener noreferrer");
+                }
+            }
+        }
+
+        function renderMarkdownInto(target, markdown, copyLabel, copiedLabel) {
+            if (!target) return;
+            if (window.marked) {
+                target.innerHTML = marked.parse(markdown || "");
+            } else {
+                target.textContent = markdown || "";
+            }
+            enhanceCodeBlocks(target, copyLabel, copiedLabel);
+        }
+
+        function renderReleases(data) {
+            loading.style.display = "none";
+            var releases = data.releases || [];
+            if (releases.length === 0) {
+                container.innerHTML = '<div class="releases-empty"><p>暂无可用的发行版，请稍后再来查看！</p></div>';
+                return;
+            }
+
+            var html = "";
+            for (var i = 0; i < releases.length; i++) {
+                var rel = releases[i];
+                var isLatest = i === 0;
+                html += '<div class="release-card' + (isLatest ? " release-latest" : "") + '" id="release-' + escapeHtml(rel.tag_name) + '">';
+                html += '<div class="release-header">';
+                html += '<div class="release-title-row">';
+                html += '<h2>' + escapeHtml(rel.name || rel.tag_name) + '</h2>';
+                if (isLatest) html += '<span class="release-badge">最新</span>';
+                if (rel.prerelease) html += '<span class="release-badge release-badge-pre">预发行</span>';
+                html += '</div>';
+                html += '<div class="release-meta">';
+                html += '<span class="release-tag">' + escapeHtml(rel.tag_name) + '</span>';
+                html += '<span class="release-date">' + formatDate(rel.published_at) + '</span>';
+                if (rel.html_url) html += '<a class="release-gh-link" href="' + escapeAttr(rel.html_url) + '" target="_blank" rel="noopener noreferrer">在 GitHub 查看 →</a>';
+                html += '</div>';
+                html += '</div>';
+
+                if (rel.body_markdown) {
+                    html += '<div class="release-body docs-rendered" id="release-body-' + i + '"></div>';
+                }
+
+                var assets = rel.assets || [];
+                if (assets.length > 0) {
+                    html += '<div class="release-assets">';
+                    html += '<h3>下载</h3>';
+                    html += '<div class="asset-list">';
+                    for (var j = 0; j < assets.length; j++) {
+                        var asset = assets[j];
+                        html += '<div class="asset-item">';
+                        html += '<span class="asset-icon"><img class="asset-icon-image" src="' + escapeAttr(platformIconPath(asset.name)) + '" alt="' + escapeAttr(platformIconAlt(asset.name)) + '"></span>';
+                        html += '<span class="asset-info">';
+                        html += '<span class="asset-name">' + escapeHtml(asset.name) + '</span>';
+                        html += '<span class="asset-size">' + formatSize(asset.size_bytes) + '</span>';
+                        html += '</span>';
+                        html += '<a class="asset-download-btn" href="' + escapeAttr(asset.download_url) + '" download>下载</a>';
+                        html += '</div>';
+                    }
+                    html += '</div>';
+                    html += '</div>';
+                }
+
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+
+            for (var k = 0; k < releases.length; k++) {
+                if (releases[k].body_markdown) {
+                    renderMarkdownInto(document.getElementById("release-body-" + k), releases[k].body_markdown, "复制", "已复制");
+                }
+            }
+        }
+
+        fetch("/static/data/releases.json", { cache: "no-store" })
+            .then(function(r){
+                if (!r.ok) throw new Error("HTTP " + r.status);
+                return r.json();
+            })
+            .then(renderReleases)
+            .catch(function(){
+                loading.style.display = "none";
+                container.innerHTML = '<div class="releases-empty"><p>无法加载发行版数据。请直接访问 <a href="https://github.com/Kinal-Lang/Kinal/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a>。</p></div>';
+            });
     })();
     </script>
 </body>

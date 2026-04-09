@@ -2263,8 +2263,19 @@ a.docs-card:hover {
 }
 
 .asset-icon {
-    font-size: 1.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;
+}
+
+.asset-icon-image {
+    display: block;
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
 }
 
 .asset-info {
@@ -2289,11 +2300,27 @@ a.docs-card:hover {
     color: var(--ink-muted);
 }
 
-.asset-dl {
-    font-size: 1.1rem;
+.asset-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 119, 51, 0.35);
+    background: rgba(255, 119, 51, 0.12);
     color: var(--accent);
+    font-size: 0.82rem;
     font-weight: 700;
+    text-decoration: none;
+    transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
     flex-shrink: 0;
+}
+
+.asset-download-btn:hover {
+    background: rgba(255, 119, 51, 0.18);
+    border-color: rgba(255, 119, 51, 0.55);
+    transform: translateY(-1px);
 }
 
 /* ===== Site Footer ===== */
@@ -2398,6 +2425,15 @@ a.brand {
     .release-body,
     .release-assets {
         padding: 16px;
+    }
+
+    .asset-item {
+        align-items: flex-start;
+    }
+
+    .asset-download-btn {
+        min-width: 78px;
+        padding: 7px 12px;
     }
 
     .comparison-table th,
