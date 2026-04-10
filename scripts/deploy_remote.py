@@ -79,7 +79,7 @@ backup_legacy_static_root() {
   local dst="$1"
   mkdir -p "$dst"
   local name=""
-  for name in googlecb65b3df36c5eb64.html html robots.txt sitemap.xml static; do
+  for name in googlecb65b3df36c5eb64.html html install.sh robots.txt sitemap.xml static; do
     if [ -e "$STATIC_ROOT/$name" ]; then
       cp -a "$STATIC_ROOT/$name" "$dst"/
     fi
@@ -216,6 +216,9 @@ install_site_bundle() {
   chown -R "$SERVICE_USER:$SERVICE_GROUP" "$site_dir"
 
   cp -a "$site_dir/managed"/. "$static_dir"/
+  preserve_existing_static_file \
+    "$static_dir/install.sh" \
+    "$STATIC_ROOT/current/install.sh"
   chmod -R go+rX "$static_dir"
 
   ln -sfn "$site_dir" "$SITE_ROOT/current"
@@ -284,6 +287,14 @@ server {
     location = /robots.txt {
         alias /var/www/kinal-static/current/robots.txt;
         access_log off;
+    }
+
+    location = /install.sh {
+        alias /var/www/kinal-static/current/install.sh;
+        default_type text/plain;
+        access_log off;
+        expires 5m;
+        add_header Cache-Control "public, max-age=300";
     }
 
     location = /sitemap.xml {
@@ -382,6 +393,22 @@ preserve_existing_release_feed() {
   fi
 
   echo "warning: incoming release feed is empty and no current feed could be preserved" >&2
+}
+
+preserve_existing_static_file() {
+  local incoming_path="$1"
+  local current_path="$2"
+
+  if [ -f "$incoming_path" ]; then
+    return 0
+  fi
+
+  if [ -f "$current_path" ]; then
+    mkdir -p "$(dirname "$incoming_path")"
+    cp -a "$current_path" "$incoming_path"
+    echo "preserved existing static file: $current_path"
+    return 0
+  fi
 }
 
 main() {
