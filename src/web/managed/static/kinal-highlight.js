@@ -9,8 +9,8 @@
  *   element.innerHTML = html;
  */
 window.highlightKinal = (function () {
-    const keywordSet = new Set([
-        "Unit", "Get", "Set", "By", "Property", "Function", "Return", "If", "Else",
+    const keywordSet = new Set(window.KinalLanguage?.keywords || [
+        "Unit", "Get", "Set", "Alias", "Foreach", "In", "default", "By", "Property", "Function", "Return", "If", "Else",
         "ElseIf", "While", "For", "Switch", "Case", "Break", "Continue", "Try", "Catch",
         "Throw", "Class", "Interface", "Struct", "Enum", "Public", "Private", "Protected",
         "Internal", "Static", "Async", "Await", "Virtual", "Override", "Abstract", "Sealed", "Constructor",
@@ -18,7 +18,7 @@ window.highlightKinal = (function () {
         "Trusted", "Unsafe", "Is", "Meta", "On", "Keep", "Repeatable", "Delegate", "Extern"
     ]);
 
-    const typeSet = new Set([
+    const typeSet = new Set(window.KinalLanguage?.types || [
         "int", "float", "f16", "f32", "f64", "f128",
         "i8", "i16", "i32", "i64",
         "u8", "u16", "u32", "u64",
@@ -111,9 +111,9 @@ window.highlightKinal = (function () {
             }
 
             // ===== Identifier / dotted path =====
-            if (/[A-Za-z_]/.test(ch)) {
+            if (/[\p{L}_]/u.test(ch)) {
                 let j = i + 1;
-                while (j < code.length && /[A-Za-z0-9_.]/.test(code[j])) j++;
+                while (j < code.length && /[\p{L}\p{N}_.]/u.test(code[j])) j++;
 
                 const token = code.slice(i, j);
 
@@ -146,7 +146,7 @@ window.highlightKinal = (function () {
                 } else {
                     const beforeStr = code.slice(0, i);
                     const afterStr2 = code.slice(j);
-                    const prevM = beforeStr.match(/\b(\w+)\s*$/);
+                    const prevM = beforeStr.match(/([\p{L}_][\p{L}\p{N}_]*)\s*$/u);
                     const prevWord = prevM ? prevM[1] : "";
 
                     if (declNameSet.has(prevWord)) {

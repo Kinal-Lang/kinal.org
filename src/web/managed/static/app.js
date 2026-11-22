@@ -13,7 +13,7 @@
             return "";
         }
 
-        const text = node.textContent || "";
+        const text = node.content.textContent || "";
         if (text === "" || text.indexOf("{{") >= 0) {
             return "";
         }
@@ -33,7 +33,7 @@
     ].join("\n");
 
     const heroCode = readTemplateText("kinal-hero-code") || heroFallbackCode;
-    const initialSampleId = "block";
+    const initialSampleId = "hello";
     const initialSampleCode = readTemplateText("kinal-sample-code");
 
     function samplePath(id) {
@@ -41,13 +41,14 @@
     }
 
     const samples = {
+        hello: { label: { en: "Hello World", "zh-CN": "Hello World" }, code: heroCode },
         block: {
             label: {
                 en: "Block",
                 "zh-CN": "代码块"
             },
             path: samplePath("block"),
-            code: initialSampleId === "block" ? initialSampleCode : null,
+            code: initialSampleCode,
             pending: null
         },
         meta: {
@@ -56,7 +57,7 @@
                 "zh-CN": "元数据"
             },
             path: samplePath("meta"),
-            code: initialSampleId === "meta" ? initialSampleCode : null,
+            code: null,
             pending: null
         },
         oop: {
@@ -65,7 +66,7 @@
                 "zh-CN": "面向对象"
             },
             path: samplePath("oop"),
-            code: initialSampleId === "oop" ? initialSampleCode : null,
+            code: null,
             pending: null
         },
         scope: {
@@ -74,16 +75,16 @@
                 "zh-CN": "作用域"
             },
             path: samplePath("scope"),
-            code: initialSampleId === "scope" ? initialSampleCode : null,
+            code: null,
             pending: null
         },
         custom: {
             label: {
-                en: "Custom",
-                "zh-CN": "自定义"
+                en: "My code",
+                "zh-CN": "我的代码"
             },
             path: samplePath("custom"),
-            code: initialSampleId === "custom" ? initialSampleCode : null,
+            code: null,
             pending: null
         }
     };
@@ -93,61 +94,48 @@
             outputTitle: "Output",
             ready: "Ready",
             edited: "Edited",
-            running: "Running...",
+            running: "Running…",
+            queued: "Queued",
+            building: "Compiling…",
+            loading: "Loading sample…",
+            sampleError: "Could not load this sample. Select it to try again.",
+            empty: "Enter some code before running.",
+            previous: "Previous run",
             completed: "Completed",
             rejected: "Rejected",
             offline: "Offline",
             tooLarge: "Too Large",
             noOutput: "(no output)",
-            runPlaceholder: "Click Run to execute a sample, or edit the code first.",
+            runPlaceholder: "Run the sample to see its output.",
             compiling: "Compiling and executing...",
             networkError: "Network error",
-            payloadTooLarge: "Code payload exceeds 4 KB.",
-            sampleChip: "sample"
+            payloadTooLarge: "Code payload exceeds 4 KB."
         },
         "zh-CN": {
             outputTitle: "输出",
             ready: "就绪",
             edited: "已修改",
-            running: "运行中...",
+            running: "运行中…",
+            queued: "排队中",
+            building: "编译中…",
+            loading: "正在加载示例…",
+            sampleError: "无法加载此示例。重新选择即可重试。",
+            empty: "请先输入代码。",
+            previous: "上次运行",
             completed: "完成",
             rejected: "已拒绝",
             offline: "离线",
             tooLarge: "过大",
             noOutput: "(无输出)",
-            runPlaceholder: "点击运行来执行示例，或者先编辑代码。",
+            runPlaceholder: "运行示例后，结果会显示在这里。",
             compiling: "正在编译并执行...",
             networkError: "网络错误",
-            payloadTooLarge: "代码内容超过 4 KB。",
-            sampleChip: "示例"
+            payloadTooLarge: "代码内容超过 4 KB。"
         }
     };
 
-    samples.block.label["zh-CN"] = "\u4ee3\u7801\u5757";
-    samples.meta.label["zh-CN"] = "\u5143\u6570\u636e";
-    samples.oop.label["zh-CN"] = "\u9762\u5411\u5bf9\u8c61";
-    samples.scope.label["zh-CN"] = "\u4f5c\u7528\u57df";
-    samples.custom.label["zh-CN"] = "\u81ea\u5b9a\u4e49";
-
-    localeText["zh-CN"] = {
-        outputTitle: "\u8f93\u51fa",
-        ready: "\u5c31\u7eea",
-        edited: "\u5df2\u4fee\u6539",
-        running: "\u8fd0\u884c\u4e2d...",
-        completed: "\u5b8c\u6210",
-        rejected: "\u5df2\u62d2\u7edd",
-        offline: "\u79bb\u7ebf",
-        tooLarge: "\u8fc7\u5927",
-        noOutput: "(\u65e0\u8f93\u51fa)",
-        runPlaceholder: "\u70b9\u51fb\u8fd0\u884c\u6765\u6267\u884c\u793a\u4f8b\uff0c\u6216\u8005\u5148\u7f16\u8f91\u4ee3\u7801\u3002",
-        compiling: "\u6b63\u5728\u7f16\u8bd1\u5e76\u6267\u884c...",
-        networkError: "\u7f51\u7edc\u9519\u8bef",
-        payloadTooLarge: "\u4ee3\u7801\u5185\u5bb9\u8d85\u8fc7 4 KB\u3002",
-        sampleChip: "\u793a\u4f8b"
-    };
-
-    const keywordSet = new Set([
-        "Unit", "Get", "Set", "By", "Property", "Function", "Return", "If", "Else",
+    const keywordSet = new Set(window.KinalLanguage?.keywords || [
+        "Unit", "Get", "Set", "Alias", "Foreach", "In", "default", "By", "Property", "Function", "Return", "If", "Else",
         "ElseIf", "While", "For", "Switch", "Case", "Break", "Continue", "Try", "Catch",
         "Throw", "Class", "Interface", "Struct", "Enum", "Public", "Private", "Protected",
         "Internal", "Static", "Async", "Await", "Virtual", "Override", "Abstract", "Sealed", "Constructor",
@@ -155,7 +143,7 @@
         "Trusted", "Unsafe", "Is", "Meta", "On", "Keep", "Repeatable", "Delegate", "Extern"
     ]);
 
-    const typeSet = new Set([
+    const typeSet = new Set(window.KinalLanguage?.types || [
         "int", "float", "f16", "f32", "f64", "f128",
         "i8", "i16", "i32", "i64",
         "u8", "u16", "u32", "u64",
@@ -164,98 +152,31 @@
         "dict", "list", "set"
     ]);
 
-    const heroLines = document.getElementById("hero-lines");
-    const heroCodeNode = document.getElementById("hero-code");
     const editorInput = document.getElementById("editor-input");
     const editorHighlight = document.getElementById("editor-highlight");
     const editorLines = document.getElementById("editor-lines");
     const runButton = document.getElementById("run-button");
     const runOutput = document.getElementById("run-output");
     const runStatus = document.getElementById("run-status");
-    const outputTitle = document.querySelector(".output-head strong");
     const sampleLabel = document.getElementById("sample-label");
     const tabHost = document.getElementById("sample-tabs");
     const tabButtons = Array.from(tabHost.querySelectorAll(".tab"));
-    const localeSwitch = document.getElementById("locale-switch");
-    const localeTrigger = document.getElementById("locale-trigger");
-    const localeLabel = localeTrigger ? localeTrigger.querySelector(".locale-label") : null;
-    const localeMenu = document.getElementById("locale-menu");
-    const localeOptions = localeMenu ? Array.from(localeMenu.querySelectorAll(".locale-option")) : [];
-    const heroCopy = document.querySelector(".hero-copy");
-    const heroGrid = heroCopy ? heroCopy.querySelector(".hero-grid") : null;
-    const heroLeads = heroCopy ? heroCopy.querySelector(".hero-leads") : null;
-    const heroSecondaryLead = heroCopy ? heroCopy.querySelector(".lead-secondary") : null;
     const codeMeasureCanvas = document.createElement("canvas");
     const codeMeasureContext = codeMeasureCanvas.getContext("2d");
 
     let activeSample = initialSampleId;
-    let customCode = samples.custom.code || "";
-    let lastServerResult = "";
-    let currentStatusKey = "ready";
-    let currentOutputKey = "runPlaceholder";
     const currentLocale = detectLocale();
     const maxCodeSize = 4096;
+    const draftKey = "kinal.playground.draft";
+    let customCode = null;
+    try { customCode = localStorage.getItem(draftKey); } catch (_) {}
     let sampleLoadToken = 0;
-    let heroTail = null;
-    const mobileHeroNarrativeQuery = window.matchMedia("(max-width: 640px)");
-    const heroSecondaryRestoreParent = heroSecondaryLead ? heroSecondaryLead.parentNode : null;
-    const heroSecondaryRestoreNextSibling = heroSecondaryLead ? heroSecondaryLead.nextSibling : null;
+    let loadingSample = false;
+    let running = false;
+    let resultSource = null;
 
-    function ensureHeroTail() {
-        if (!heroCopy || !heroGrid) {
-            return null;
-        }
-
-        if (!heroTail) {
-            heroTail = document.createElement("div");
-            heroTail.className = "hero-tail";
-            heroTail.hidden = true;
-            heroGrid.insertAdjacentElement("afterend", heroTail);
-        }
-
-        heroTail.setAttribute("data-label", currentLocale === "zh-CN" ? "补充说明" : "More context");
-        return heroTail;
-    }
-
-    function restoreHeroSecondaryLead() {
-        if (!heroSecondaryLead || !heroSecondaryRestoreParent) {
-            return;
-        }
-
-        if (heroSecondaryLead.parentNode === heroSecondaryRestoreParent) {
-            return;
-        }
-
-        if (heroSecondaryRestoreNextSibling && heroSecondaryRestoreNextSibling.parentNode === heroSecondaryRestoreParent) {
-            heroSecondaryRestoreParent.insertBefore(heroSecondaryLead, heroSecondaryRestoreNextSibling);
-            return;
-        }
-
-        heroSecondaryRestoreParent.appendChild(heroSecondaryLead);
-    }
-
-    function syncHeroNarrativeLayout() {
-        if (!heroCopy || !heroGrid || !heroLeads || !heroSecondaryLead) {
-            return;
-        }
-
-        const tail = ensureHeroTail();
-        if (!tail) {
-            return;
-        }
-
-        if (mobileHeroNarrativeQuery.matches) {
-            if (heroSecondaryLead.parentNode !== tail) {
-                tail.appendChild(heroSecondaryLead);
-            }
-            tail.hidden = false;
-            heroCopy.classList.add("hero-condensed");
-            return;
-        }
-
-        restoreHeroSecondaryLead();
-        tail.hidden = true;
-        heroCopy.classList.remove("hero-condensed");
+    function syncRunButton() {
+        runButton.disabled = running || loadingSample;
     }
 
     function textFor(key) {
@@ -270,12 +191,11 @@
     }
 
     function setStatus(key) {
-        currentStatusKey = key;
-        runStatus.textContent = textFor(key);
+        runStatus.dataset.state = key;
+        if (runStatus.textContent !== textFor(key)) runStatus.textContent = textFor(key);
     }
 
     function setOutputMessage(key, extraText) {
-        currentOutputKey = key;
         const text = textFor(key);
         runOutput.textContent = extraText ? text + "\n\n" + sanitizeServerText(extraText) : text;
     }
@@ -290,46 +210,6 @@
             .replace(/\u001b\][^\u0007]*(?:\u0007|\u001b\\)/g, "")
             .replace(/\r\n/g, "\n")
             .replace(/\r/g, "\n");
-    }
-
-    function applyLocaleUi() {
-        if (localeLabel) {
-            localeLabel.textContent = currentLocale === "zh-CN" ? "简体中文" : "English";
-        }
-
-        if (localeLabel) {
-            localeLabel.textContent = currentLocale === "zh-CN" ? "\u7b80\u4f53\u4e2d\u6587" : "English";
-        }
-
-        if (outputTitle) {
-            outputTitle.textContent = textFor("outputTitle");
-        }
-
-        sampleLabel.textContent = sampleLabelFor(activeSample);
-        tabButtons.forEach(function (button) {
-            button.textContent = sampleLabelFor(button.dataset.sample);
-        });
-
-        if (currentOutputKey !== "server") {
-            runOutput.textContent = textFor(currentOutputKey);
-        }
-        runStatus.textContent = textFor(currentStatusKey);
-
-        localeOptions.forEach(function (option) {
-            option.classList.toggle("active", option.dataset.locale === currentLocale);
-        });
-
-        syncLocaleOptionHrefs();
-    }
-
-    function syncLocaleOptionHrefs() {
-        const hash = window.location.hash || "";
-        localeOptions.forEach(function (option) {
-            const raw = option.dataset.baseHref || option.getAttribute("href") || "/";
-            const base = raw.split("#")[0];
-            option.dataset.baseHref = base;
-            option.setAttribute("href", base + hash);
-        });
     }
 
     function escapeHtml(text) {
@@ -500,9 +380,9 @@
             }
 
             // ===== Identifier / dotted path =====
-            if (/[A-Za-z_]/.test(ch)) {
+            if (/[\p{L}_]/u.test(ch)) {
                 let j = i + 1;
-                while (j < code.length && /[A-Za-z0-9_.]/.test(code[j])) {
+                while (j < code.length && /[\p{L}\p{N}_.]/u.test(code[j])) {
                     j++;
                 }
 
@@ -537,7 +417,7 @@
                 } else {
                     const beforeStr = code.slice(0, i);
                     const afterStr2 = code.slice(j);
-                    const prevM = beforeStr.match(/\b(\w+)\s*$/);
+                    const prevM = beforeStr.match(/([\p{L}_][\p{L}\p{N}_]*)\s*$/u);
                     const prevWord = prevM ? prevM[1] : "";
 
                     if (declNameSet.has(prevWord)) {
@@ -634,22 +514,13 @@
         setTranslateY(editorLines, -editorInput.scrollTop);
     }
 
-    function syncHeroScroll() {
-        setTranslateY(heroLines, -heroCodeNode.scrollTop);
-    }
-
-    function renderReadOnly(node, gutterNode, code) {
-        syncGutterMetrics(gutterNode, node);
-        node.innerHTML = highlightKinal(code);
-        renderLineNumbers(gutterNode, code);
-        syncHeroScroll();
-    }
-
     function setActiveTab(id) {
         activeSample = id;
-        sampleLabel.textContent = sampleLabelFor(id);
+        sampleLabel.textContent = id + ".kn";
         tabButtons.forEach((button) => {
-            button.classList.toggle("active", button.dataset.sample === id);
+            const selected = button.dataset.sample === id;
+            button.classList.toggle("active", selected);
+            button.setAttribute("aria-pressed", String(selected));
         });
     }
 
@@ -687,51 +558,49 @@
         return sample.pending;
     }
 
-    function prefetchSamples() {
-        Object.keys(samples).forEach(function (id) {
-            if (id === initialSampleId) {
-                return;
-            }
-            ensureSampleLoaded(id).catch(function () {
-            });
-        });
-    }
-
     async function loadSample(id) {
+        acHide();
         const token = ++sampleLoadToken;
-        let source = "";
-
-        if (id === "custom") {
-            if (customCode !== "") {
-                source = customCode;
-            } else {
-                source = await ensureSampleLoaded("custom");
-                if (customCode === "") {
-                    customCode = source;
-                }
+        loadingSample = true;
+        syncRunButton();
+        if (!running) setStatus("loading");
+        try {
+            const source = id === "custom" && customCode !== null ? customCode : await ensureSampleLoaded(id);
+            if (token !== sampleLoadToken) return;
+            setActiveTab(id);
+            editorInput.value = source;
+            editorInput.setSelectionRange(0, 0);
+            editorInput.scrollTop = 0;
+            editorInput.scrollLeft = 0;
+            syncEditorVisuals();
+            syncEditorScroll();
+            if (!running) {
+                resultSource = null;
+                setStatus("ready");
+                setOutputMessage("runPlaceholder");
             }
-        } else {
-            source = await ensureSampleLoaded(id);
+        } catch (_) {
+            if (token === sampleLoadToken && !running) {
+                resultSource = null;
+                setStatus("offline");
+                setOutputMessage("sampleError");
+            }
+        } finally {
+            if (token === sampleLoadToken) {
+                loadingSample = false;
+                syncRunButton();
+            }
         }
-
-        if (token !== sampleLoadToken) {
-            return;
-        }
-
-        setActiveTab(id);
-        editorInput.value = id === "custom" ? customCode : source;
-        syncEditorVisuals();
-        syncEditorScroll();
     }
 
     function handleCustomPromotion() {
-        const current = editorInput.value;
-        if (activeSample !== "custom" && current !== samples[activeSample].code) {
-            customCode = current;
-            setActiveTab("custom");
-        } else if (activeSample === "custom") {
-            customCode = current;
-        }
+        ++sampleLoadToken;
+        loadingSample = false;
+        syncRunButton();
+        customCode = editorInput.value;
+        setActiveTab("custom");
+        try { localStorage.setItem(draftKey, customCode); } catch (_) {}
+        if (!running) setStatus(resultSource === null ? "edited" : "previous");
     }
 
     function delay(ms) {
@@ -755,104 +624,110 @@
         };
     }
 
-    async function pollRunJob(jobId) {
-        while (true) {
+    async function pollRunJob(jobId, signal) {
+        const stages = { queued: "queued", compiling: "building", running: "running" };
+        while (!signal.aborted) {
             const response = await fetch("/api/run/status?id=" + encodeURIComponent(jobId), {
-                cache: "no-store"
+                cache: "no-store", signal
             });
-            const text = await response.text();
-            const parsed = parseJobResponse(text);
-            if (parsed.status === "queued" || parsed.status === "compiling" || parsed.status === "running") {
-                setStatus("running");
-                setOutputMessage("compiling", parsed.status);
-                await delay(250);
-                continue;
-            }
-            return {
-                response: response,
-                text: text,
-                parsed: parsed
-            };
+            const parsed = parseJobResponse(await response.text());
+            if (response.status !== 202 || !stages[parsed.status]) return parsed;
+            setStatus(stages[parsed.status]);
+            await delay(250);
         }
+        throw new Error("Run timed out");
     }
 
     async function runCode() {
+        if (running || loadingSample) return;
         const code = editorInput.value;
 
-        if (code.length > maxCodeSize) {
+        if (!code.trim()) {
+            resultSource = null;
+            setStatus("rejected");
+            setOutputMessage("empty");
+            return;
+        }
+        if (new TextEncoder().encode(code).length > maxCodeSize) {
+            resultSource = null;
             setStatus("tooLarge");
             setOutputMessage("payloadTooLarge");
             return;
         }
 
-        runButton.disabled = true;
-        setStatus("running");
+        running = true;
+        resultSource = code;
+        syncRunButton();
+        setStatus("queued");
         setOutputMessage("compiling");
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 45000);
 
         try {
             const response = await fetch("/api/run", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "text/plain; charset=utf-8"
-                },
-                body: code
+                headers: { "Content-Type": "text/plain; charset=utf-8" },
+                body: code,
+                signal: controller.signal
             });
-
             const text = await response.text();
-            const jobId = text.trim();
-
-            if (!response.ok) {
-                lastServerResult = text;
-                if (text && text !== "") {
-                    currentOutputKey = "server";
-                    runOutput.textContent = sanitizeServerText(text);
-                } else {
-                    setOutputMessage("noOutput");
-                }
-                setStatus("rejected");
-                return;
-            }
-
-            const finalState = await pollRunJob(jobId);
-            lastServerResult = finalState.parsed.payload || finalState.text;
-            if (finalState.parsed.payload && finalState.parsed.payload !== "") {
-                currentOutputKey = "server";
-                runOutput.textContent = sanitizeServerText(finalState.parsed.payload);
-            } else {
-                setOutputMessage("noOutput");
-            }
-            setStatus(finalState.parsed.status === "completed" ? "completed" : "rejected");
+            const final = response.status === 202
+                ? await pollRunJob(text.trim(), controller.signal)
+                : { status: "rejected", payload: text };
+            runOutput.textContent = final.payload ? sanitizeServerText(final.payload) : textFor("noOutput");
+            setStatus(editorInput.value !== code ? "previous" : final.status === "completed" ? "completed" : "rejected");
         } catch (error) {
-            const message = error && error.message ? error.message : String(error);
+            const timedOut = controller.signal.aborted;
+            const message = timedOut ? (currentLocale === "zh-CN" ? "等待执行超时，请重试。" : "The run timed out. Try again.") : error.message;
             setOutputMessage("networkError", message);
-            setStatus("offline");
+            setStatus(editorInput.value === code ? "offline" : "previous");
         } finally {
-            runButton.disabled = false;
+            window.clearTimeout(timeout);
+            running = false;
+            syncRunButton();
         }
     }
 
     tabButtons.forEach((button) => {
-        button.addEventListener("click", async function () {
-            const id = button.dataset.sample;
-            if (id === "custom") {
-                customCode = editorInput.value;
-            }
-            await loadSample(id);
-            if (lastServerResult !== "") {
-                setStatus("ready");
-            }
-        });
+        button.textContent = sampleLabelFor(button.dataset.sample);
+        button.addEventListener("click", () => loadSample(button.dataset.sample));
     });
 
-    editorInput.addEventListener("input", function () {
+    editorInput.addEventListener("input", function (event) {
         syncEditorVisuals();
+        syncEditorScroll();
         handleCustomPromotion();
-        setStatus("edited");
-        updateAutocomplete();
+        if (!event.isComposing) requestAutocomplete();
     });
 
-    editorInput.addEventListener("scroll", syncEditorScroll);
+    editorInput.addEventListener("scroll", () => {
+        syncEditorScroll();
+        if (acVisible()) positionAutocomplete();
+    });
+    editorInput.addEventListener("compositionstart", acHide);
+    editorInput.addEventListener("compositionend", requestAutocomplete);
+    editorInput.addEventListener("click", acHide);
     editorInput.addEventListener("keydown", function (event) {
+        if (event.isComposing) return;
+        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+            event.preventDefault();
+            acHide();
+            runCode();
+            return;
+        }
+        if ((event.ctrlKey || event.metaKey) && event.code === "Space") {
+            event.preventDefault();
+            requestAutocomplete(true);
+            return;
+        }
+        if (event.ctrlKey || event.metaKey || event.altKey || (event.shiftKey && event.key === "Tab")) {
+            acHide();
+            return;
+        }
+        if (event.key === "Escape") {
+            acHide();
+            return;
+        }
         if (acVisible()) {
             if (event.key === "ArrowDown") {
                 event.preventDefault();
@@ -864,28 +739,13 @@
                 acMove(-1);
                 return;
             }
-            if (event.key === "Tab" || event.key === "Enter") {
+            if (event.key === "Enter" || event.key === "Tab") {
                 event.preventDefault();
                 acAccept();
                 return;
             }
-            if (event.key === "Escape") {
-                event.preventDefault();
-                acHide();
-                return;
-            }
         }
-        if (event.key === "Tab") {
-            event.preventDefault();
-            const start = editorInput.selectionStart;
-            const end = editorInput.selectionEnd;
-            editorInput.setRangeText("    ", start, end, "end");
-            editorInput.selectionStart = editorInput.selectionEnd = start + 4;
-            syncEditorVisuals();
-            handleCustomPromotion();
-            return;
-        }
-
+        if (["ArrowLeft", "ArrowRight", "Home", "End", "PageUp", "PageDown"].includes(event.key)) acHide();
         var pairMap = { "(": ")", "{": "}", "[": "]", '"': '"', "'": "'" };
         var closerSet = { ")": 1, "}": 1, "]": 1 };
         var ch = event.key;
@@ -909,8 +769,7 @@
             }
             syncEditorVisuals();
             handleCustomPromotion();
-            setStatus("edited");
-            updateAutocomplete();
+            requestAutocomplete();
             return;
         }
 
@@ -937,7 +796,6 @@
                 editorInput.selectionStart = editorInput.selectionEnd = s3 + 1 + newIndent.length;
                 syncEditorVisuals();
                 handleCustomPromotion();
-                setStatus("edited");
                 return;
             }
         }
@@ -951,7 +809,6 @@
                 editorInput.selectionStart = editorInput.selectionEnd = s2 + 1;
                 syncEditorVisuals();
                 handleCustomPromotion();
-                setStatus("edited");
                 return;
             }
         }
@@ -961,351 +818,7 @@
     let acItems = [];
     let acIndex = -1;
     let acPrefix = "";
-    let acFadeTimer = null;
-
-    function acFunc() {
-        return { _kind: "func" };
-    }
-
-    function acType(children) {
-        return Object.assign({ _kind: "type" }, children || {});
-    }
-
-    function acModule(children) {
-        return Object.assign({ _kind: "module" }, children || {});
-    }
-
-    const acModuleTree = acModule({
-        "IO": acModule({
-            "Console": acModule({
-                "PrintLine": acFunc(),
-                "Print": acFunc(),
-                "ReadLine": acFunc(),
-                "Clear": acFunc()
-            }),
-            "Time": acModule({
-                "Now": acFunc(),
-                "GetTick": acFunc(),
-                "Sleep": acFunc(),
-                "GetNanoTick": acFunc(),
-                "Format": acFunc(),
-                "DateTime": acType()
-            }),
-            "Math": acModule({
-                "Abs": acFunc(),
-                "Min": acFunc(),
-                "Max": acFunc(),
-                "Clamp": acFunc(),
-                "Sign": acFunc()
-            }),
-            "Path": acModule({
-                "Combine": acFunc(),
-                "FileName": acFunc(),
-                "Extension": acFunc(),
-                "Directory": acFunc(),
-                "Normalize": acFunc(),
-                "Cwd": acFunc(),
-                "ChangeExtension": acFunc(),
-                "HasExtension": acFunc(),
-                "IsAbsolute": acFunc(),
-                "BaseName": acFunc()
-            }),
-            "Text": acModule({
-                "Length": acFunc(),
-                "IsEmpty": acFunc(),
-                "Count": acFunc(),
-                "Contains": acFunc(),
-                "StartsWith": acFunc(),
-                "EndsWith": acFunc(),
-                "IndexOf": acFunc(),
-                "LastIndexOf": acFunc(),
-                "Trim": acFunc(),
-                "Replace": acFunc(),
-                "ToUpper": acFunc(),
-                "ToLower": acFunc(),
-                "Slice": acFunc(),
-                "Split": acFunc(),
-                "Join": acFunc(),
-                "Lines": acFunc()
-            }),
-            "File": acModule({
-                "Exists": acFunc(),
-                "Create": acFunc(),
-                "Touch": acFunc(),
-                "ReadAllText": acFunc(),
-                "ReadFirstLine": acFunc(),
-                "WriteAllText": acFunc(),
-                "AppendAllText": acFunc(),
-                "AppendLine": acFunc(),
-                "Delete": acFunc(),
-                "DeleteIfExists": acFunc(),
-                "Size": acFunc(),
-                "IsEmpty": acFunc(),
-                "Copy": acFunc(),
-                "Move": acFunc(),
-                "ReadOrDefault": acFunc(),
-                "ReadIfExists": acFunc(),
-                "ReadOr": acFunc(),
-                "ReadLines": acFunc(),
-                "WriteLines": acFunc(),
-                "ReplaceText": acFunc()
-            }),
-            "Directory": acModule({
-                "Exists": acFunc(),
-                "Create": acFunc(),
-                "Ensure": acFunc(),
-                "Delete": acFunc(),
-                "DeleteIfExists": acFunc()
-            }),
-            "System": acModule({
-                "Exit": acFunc(),
-                "CommandLine": acFunc(),
-                "FileExists": acFunc(),
-                "Exec": acFunc(),
-                "LoadLibrary": acFunc(),
-                "GetSymbol": acFunc(),
-                "CloseLibrary": acFunc(),
-                "LastError": acFunc()
-            }),
-            "Meta": acModule({
-                "Query": acFunc(),
-                "Of": acFunc(),
-                "Has": acFunc(),
-                "Find": acFunc()
-            }),
-            "Error": acModule({
-                "LastTrace": acFunc(),
-                "HasException": acFunc(),
-                "Clear": acFunc(),
-                "Current": acFunc()
-            }),
-            "GC": acModule({
-                "Collect": acFunc()
-            }),
-            "Memory": acModule({
-                "Copy": acFunc(),
-                "Set": acFunc(),
-                "Zero": acFunc(),
-                "Compare": acFunc()
-            }),
-            "Volatile": acModule({
-                "Read8": acFunc(),
-                "Read16": acFunc(),
-                "Read32": acFunc(),
-                "Read64": acFunc(),
-                "Write8": acFunc(),
-                "Write16": acFunc(),
-                "Write32": acFunc(),
-                "Write64": acFunc()
-            }),
-            "Panic": acModule({
-                "Abort": acFunc(),
-                "Halt": acFunc()
-            }),
-            "Collection": acModule({
-                "dict": acType({
-                    "Create": acFunc(),
-                    "Set": acFunc(),
-                    "Fetch": acFunc(),
-                    "TryFetch": acFunc(),
-                    "Contains": acFunc(),
-                    "Count": acFunc(),
-                    "Remove": acFunc(),
-                    "IsEmpty": acFunc(),
-                    "Keys": acFunc(),
-                    "Values": acFunc()
-                }),
-                "list": acType({
-                    "Create": acFunc(),
-                    "Add": acFunc(),
-                    "Fetch": acFunc(),
-                    "Set": acFunc(),
-                    "Insert": acFunc(),
-                    "TryFetch": acFunc(),
-                    "Count": acFunc(),
-                    "Clear": acFunc(),
-                    "RemoveAt": acFunc(),
-                    "Contains": acFunc(),
-                    "Pop": acFunc(),
-                    "Peek": acFunc(),
-                    "IndexOf": acFunc(),
-                    "IsEmpty": acFunc()
-                }),
-                "set": acType({
-                    "Create": acFunc(),
-                    "Add": acFunc(),
-                    "Contains": acFunc(),
-                    "Count": acFunc(),
-                    "Remove": acFunc(),
-                    "Clear": acFunc(),
-                    "IsEmpty": acFunc(),
-                    "Values": acFunc()
-                })
-            }),
-            "Type": acModule({
-                "bool": acFunc(),
-                "byte": acFunc(),
-                "char": acFunc(),
-                "int": acFunc(),
-                "float": acFunc(),
-                "f16": acFunc(),
-                "f32": acFunc(),
-                "f64": acFunc(),
-                "f128": acFunc(),
-                "i8": acFunc(),
-                "i16": acFunc(),
-                "i32": acFunc(),
-                "i64": acFunc(),
-                "u8": acFunc(),
-                "u16": acFunc(),
-                "u32": acFunc(),
-                "u64": acFunc(),
-                "isize": acFunc(),
-                "usize": acFunc(),
-                "string": acType({
-                    "Length": acFunc(),
-                    "Concat": acFunc(),
-                    "Equals": acFunc(),
-                    "ToChars": acFunc()
-                }),
-                "any": acType({
-                    "IsNull": acFunc(),
-                    "ToString": acFunc(),
-                    "Equals": acFunc(),
-                    "Tag": acFunc(),
-                    "TypeName": acFunc(),
-                    "IsNumber": acFunc(),
-                    "IsPointer": acFunc(),
-                    "IsInt": acFunc(),
-                    "IsFloat": acFunc(),
-                    "IsString": acFunc(),
-                    "IsBool": acFunc(),
-                    "IsChar": acFunc(),
-                    "IsObject": acFunc()
-                }),
-                "Object": acModule({
-                    "Class": acType(),
-                    "Function": acType({
-                        "Invoke": acFunc()
-                    }),
-                    "Block": acType({
-                        "Run": acFunc(),
-                        "Jump": acFunc(),
-                        "RunUntil": acFunc(),
-                        "JumpAndRunUntil": acFunc()
-                    })
-                })
-            }),
-            "Web": acModule({
-                "Route": acFunc(),
-                "HttpMethod": acType({
-                    "Unknown": acType(),
-                    "GET": acType(),
-                    "POST": acType(),
-                    "PUT": acType(),
-                    "DELETE": acType(),
-                    "PATCH": acType(),
-                    "HEAD": acType(),
-                    "OPTIONS": acType()
-                }),
-                "Request": acType({
-                    "Method": acFunc(),
-                    "MethodText": acFunc(),
-                    "Path": acFunc(),
-                    "RawPath": acFunc(),
-                    "QueryText": acFunc(),
-                    "ContentType": acFunc(),
-                    "ContentLength": acFunc(),
-                    "QueryValue": acFunc(),
-                    "Header": acFunc(),
-                    "BodyText": acFunc()
-                }),
-                "Response": acType({
-                    "StatusCode": acFunc(),
-                    "ContentType": acFunc(),
-                    "HasSent": acFunc(),
-                    "Send": acFunc(),
-                    "Text": acFunc(),
-                    "Html": acFunc(),
-                    "Json": acFunc(),
-                    "JavaScript": acFunc()
-                }),
-                "Context": acType({
-                    "Server": acFunc(),
-                    "Request": acFunc(),
-                    "Response": acFunc()
-                }),
-                "RouteDefinition": acType({
-                    "Key": acFunc(),
-                    "Invoke": acFunc()
-                }),
-                "StaticMount": acType(),
-                "Server": acType({
-                    "Host": acFunc(),
-                    "Port": acFunc(),
-                    "Debug": acFunc(),
-                    "LiveReload": acFunc(),
-                    "IsStarted": acFunc(),
-                    "HasRoutes": acFunc(),
-                    "EnableDebug": acFunc(),
-                    "EnableLiveReload": acFunc(),
-                    "Url": acFunc(),
-                    "ReloadVersionPath": acFunc(),
-                    "DebugRoutesPath": acFunc(),
-                    "DebugServerPath": acFunc(),
-                    "UseStatic": acFunc(),
-                    "UseStaticMount": acFunc(),
-                    "RefreshRoutes": acFunc(),
-                    "UseRoutes": acFunc(),
-                    "FindRoute": acFunc(),
-                    "HasAnyRouteForPath": acFunc(),
-                    "ReloadVersion": acFunc(),
-                    "LiveReloadScript": acFunc(),
-                    "InjectLiveReload": acFunc(),
-                    "BuildRoutesDebugText": acFunc(),
-                    "BuildDebugErrorPage": acFunc(),
-                    "BuildProductionErrorPage": acFunc(),
-                    "HandleCurrentError": acFunc(),
-                    "DispatchCurrentRequest": acFunc(),
-                    "Start": acFunc(),
-                    "Wait": acFunc(),
-                    "Stop": acFunc(),
-                    "Run": acFunc()
-                }),
-                "Http": acModule({
-                    "CurrentServer": acFunc(),
-                    "Current": acFunc(),
-                    "Request": acFunc(),
-                    "Response": acFunc()
-                })
-            })
-        })
-    });
-
-    const acKeywords = [
-        "Unit", "Get", "Set", "By", "Property", "Function", "Return", "If", "Else",
-        "ElseIf", "While", "For", "Switch", "Case", "Break", "Continue", "Try", "Catch",
-        "Throw", "Class", "Interface", "Struct", "Enum", "Public", "Private", "Protected",
-        "Internal", "Static", "Virtual", "Override", "Abstract", "Sealed", "Constructor",
-        "New", "This", "Base", "Block", "Record", "Jump", "Const", "Var", "Safe",
-        "Trusted", "Unsafe", "Is", "Meta", "On", "Keep", "Repeatable", "Delegate", "Extern"
-    ];
-
-    const acTypes = [
-        "int", "float", "f16", "f32", "f64", "f128",
-        "i8", "i16", "i32", "i64",
-        "u8", "u16", "u32", "u64",
-        "isize", "usize",
-        "string", "bool", "char", "void", "any", "byte",
-        "dict", "list", "set"
-    ];
-
-    function getWordBefore() {
-        const pos = editorInput.selectionStart;
-        const text = editorInput.value.slice(0, pos);
-        const m = text.match(/[A-Za-z_][A-Za-z0-9_.]*$/);
-        return m ? m[0] : "";
-    }
+    let acFrame = 0;
 
     function getCaretCoords() {
         const text = editorInput.value.slice(0, editorInput.selectionStart);
@@ -1321,63 +834,23 @@
         };
     }
 
-    function resolveModulePath(prefix) {
-        const parts = prefix.split(".");
-        let node = acModuleTree;
-        let consumed = [];
-        for (let i = 0; i < parts.length - 1; i++) {
-            if (node[parts[i]] && typeof node[parts[i]] === "object") {
-                node = node[parts[i]];
-                consumed.push(parts[i]);
-            } else {
-                return null;
-            }
-        }
-        const partial = parts[parts.length - 1].toLowerCase();
-        const basePath = consumed.length > 0 ? consumed.join(".") + "." : "";
-        const results = [];
-        for (const key in node) {
-            if (key === "_kind") continue;
-            if (key.toLowerCase().startsWith(partial) && key !== parts[parts.length - 1]) {
-                const kind = node[key]._kind || "module";
-                results.push({ text: basePath + key, kind: kind });
-            }
-        }
-        return results;
+    function requestAutocomplete(manual = false) {
+        cancelAnimationFrame(acFrame);
+        acFrame = requestAnimationFrame(() => {
+            acFrame = 0;
+            updateAutocomplete(manual === true);
+        });
     }
 
-    function getCompletions(prefix) {
-        const results = [];
-        const lower = prefix.toLowerCase();
-
-        /* If prefix contains a dot, do hierarchical module lookup */
-        if (prefix.includes(".")) {
-            const moduleResults = resolveModulePath(prefix);
-            if (moduleResults) return moduleResults.slice(0, 8);
-            return [];
+    function updateAutocomplete(manual = false) {
+        if (document.activeElement !== editorInput || editorInput.selectionStart !== editorInput.selectionEnd) {
+            acHide();
+            return;
         }
+        const { prefix, items: matches, blocked } = window.KinalCompletion.complete(editorInput.value, editorInput.selectionStart);
+        if (blocked) { acHide(); return; }
+        if (!manual && prefix.length < 1) { acHide(); return; }
 
-        /* Top-level: keywords + types + top-level modules */
-        for (const kw of acKeywords) {
-            if (kw.toLowerCase().startsWith(lower) && kw !== prefix)
-                results.push({ text: kw, kind: "keyword" });
-        }
-        for (const tp of acTypes) {
-            if (tp.toLowerCase().startsWith(lower) && tp !== prefix)
-                results.push({ text: tp, kind: "type" });
-        }
-        for (const key in acModuleTree) {
-            if (key.toLowerCase().startsWith(lower) && key !== prefix)
-                results.push({ text: key, kind: "module" });
-        }
-        return results.slice(0, 8);
-    }
-
-    function updateAutocomplete() {
-        const prefix = getWordBefore();
-        if (prefix.length < 1) { acHide(); return; }
-
-        const matches = getCompletions(prefix);
         if (matches.length === 0) { acHide(); return; }
 
         acPrefix = prefix;
@@ -1387,16 +860,31 @@
         acMenu.innerHTML = "";
         acItems.forEach(function (item, i) {
             const li = document.createElement("li");
+            li.id = "completion-" + i;
             li.setAttribute("role", "option");
+            li.setAttribute("aria-selected", String(i === 0));
 
             const badge = document.createElement("span");
             badge.className = "ac-badge ac-" + item.kind;
-            const labels = { keyword: "K", type: "T", module: "M", func: "F" };
+            badge.setAttribute("aria-hidden", "true");
+            const labels = { keyword: "K", type: "T", module: "M", func: "F", property: "P", field: "P", constant: "C", variable: "V", attribute: "A" };
             badge.textContent = labels[item.kind] || "S";
             li.appendChild(badge);
 
             const label = document.createElement("span");
-            label.textContent = item.text;
+            label.className = "ac-content";
+            const name = document.createElement("span");
+            name.className = "ac-name";
+            name.textContent = item.text;
+            label.appendChild(name);
+            if (item.detail) {
+                const detail = document.createElement("span");
+                detail.className = "ac-detail";
+                detail.textContent = item.detail;
+                label.appendChild(detail);
+                li.title = item.text + " " + item.detail;
+            }
+            li.setAttribute("aria-label", item.text);
             li.appendChild(label);
 
             if (i === 0) li.classList.add("active");
@@ -1408,40 +896,64 @@
             acMenu.appendChild(li);
         });
 
-        const coords = getCaretCoords();
-        acMenu.style.top = coords.top + "px";
-        acMenu.style.left = Math.min(coords.left, editorInput.offsetWidth - 180) + "px";
         acShow();
+        positionAutocomplete();
+    }
+
+    function positionAutocomplete() {
+        const coords = getCaretCoords();
+        const lineHeight = parseFloat(getComputedStyle(editorInput).lineHeight);
+        // Input can scroll to reveal the caret after the input event. Reposition
+        // the same menu rather than closing it during that automatic scroll.
+        if (coords.top < 0 || coords.top - lineHeight > editorInput.clientHeight) {
+            acHide();
+            return;
+        }
+        const gap = 6;
+        const belowSpace = editorInput.clientHeight - coords.top - gap;
+        const aboveSpace = coords.top - lineHeight - gap;
+        acMenu.style.maxHeight = Math.max(0, Math.min(200, Math.max(belowSpace, aboveSpace))) + "px";
+        const maxLeft = editorInput.clientWidth - acMenu.offsetWidth - gap;
+        const below = coords.top;
+        const above = below - acMenu.offsetHeight - lineHeight;
+        acMenu.style.top = Math.max(gap, below + acMenu.offsetHeight < editorInput.clientHeight ? below : above) + "px";
+        acMenu.style.left = Math.max(gap, Math.min(coords.left, maxLeft)) + "px";
     }
 
     function acVisible() { return acMenu.classList.contains("ac-show"); }
 
     function acShow() {
-        clearTimeout(acFadeTimer);
         acMenu.hidden = false;
-        /* Force reflow so transition fires */
-        void acMenu.offsetHeight;
         acMenu.classList.add("ac-show");
+        editorInput.setAttribute("aria-activedescendant", "completion-" + acIndex);
     }
 
     function acHide() {
-        if (!acMenu.classList.contains("ac-show") && acMenu.hidden) return;
+        cancelAnimationFrame(acFrame);
+        acFrame = 0;
         acMenu.classList.remove("ac-show");
-        clearTimeout(acFadeTimer);
-        acFadeTimer = setTimeout(function () {
-            acMenu.hidden = true;
-            acItems = [];
-            acIndex = -1;
-        }, 200);
+        acMenu.hidden = true;
+        acItems = [];
+        acIndex = -1;
+        editorInput.removeAttribute("aria-activedescendant");
     }
 
     function acMove(dir) {
         if (acItems.length === 0) return;
         const lis = acMenu.querySelectorAll("li");
-        if (lis[acIndex]) lis[acIndex].classList.remove("active");
+        if (lis[acIndex]) {
+            lis[acIndex].classList.remove("active");
+            lis[acIndex].setAttribute("aria-selected", "false");
+        }
         acIndex = (acIndex + dir + acItems.length) % acItems.length;
         lis[acIndex].classList.add("active");
-        lis[acIndex].scrollIntoView({ block: "nearest" });
+        lis[acIndex].setAttribute("aria-selected", "true");
+        editorInput.setAttribute("aria-activedescendant", lis[acIndex].id);
+        const option = lis[acIndex];
+        if (option.offsetTop < acMenu.scrollTop) acMenu.scrollTop = option.offsetTop;
+        else if (option.offsetTop + option.offsetHeight > acMenu.scrollTop + acMenu.clientHeight) {
+            acMenu.scrollTop = option.offsetTop + option.offsetHeight - acMenu.clientHeight;
+        }
     }
 
     function acAccept() {
@@ -1449,402 +961,38 @@
         const chosen = acItems[acIndex].text;
         const pos = editorInput.selectionStart;
         const before = editorInput.value.slice(0, pos - acPrefix.length);
-        const after = editorInput.value.slice(pos);
+        const suffixLength = editorInput.value.slice(pos).match(/^[\p{L}\p{N}_]*/u)[0].length;
+        const after = editorInput.value.slice(pos + suffixLength);
         editorInput.value = before + chosen + after;
         editorInput.selectionStart = editorInput.selectionEnd = before.length + chosen.length;
         acHide();
         syncEditorVisuals();
+        syncEditorScroll();
         handleCustomPromotion();
         editorInput.focus();
     }
 
-    editorInput.addEventListener("blur", function () {
-        setTimeout(acHide, 150);
-    });
-
-    function setLocaleMenu(open) {
-        if (!localeSwitch || !localeTrigger) return;
-        localeSwitch.classList.toggle("open", open);
-        localeTrigger.setAttribute("aria-expanded", open ? "true" : "false");
-    }
-
-    if (localeTrigger) {
-        localeTrigger.addEventListener("click", function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            setLocaleMenu(!localeSwitch.classList.contains("open"));
-        });
-    }
-
-    localeOptions.forEach(function (option) {
-        option.addEventListener("click", function () {
-            syncLocaleOptionHrefs();
-            setLocaleMenu(false);
-        });
-    });
-
-    document.addEventListener("click", function (event) {
-        if (!localeSwitch || localeSwitch.contains(event.target)) return;
-        setLocaleMenu(false);
-    });
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape") {
-            setLocaleMenu(false);
-        }
-    });
+    editorInput.addEventListener("blur", acHide);
 
     runButton.addEventListener("click", runCode);
-    heroCodeNode.addEventListener("scroll", syncHeroScroll);
-
-    /* ===== Mobile hamburger menu toggle ===== */
-    var topbarToggle = document.getElementById("topbar-toggle");
-    var topbar = document.querySelector(".topbar");
-    if (topbarToggle && topbar) {
-        topbarToggle.addEventListener("click", function () {
-            topbar.classList.toggle("menu-open");
-        });
-        /* Close menu when a nav link is clicked */
-        var mobileNavLinks = topbar.querySelectorAll(".topnav a");
-        mobileNavLinks.forEach(function (link) {
-            link.addEventListener("click", function () {
-                topbar.classList.remove("menu-open");
-            });
-        });
-    }
-
-    applyLocaleUi();
-    syncHeroNarrativeLayout();
-    renderReadOnly(heroCodeNode, heroLines, heroCode);
-    loadSample(initialSampleId);
-    prefetchSamples();
-    window.addEventListener("resize", function () {
-        syncHeroNarrativeLayout();
-        syncGutterMetrics(heroLines, heroCodeNode);
-        syncGutterMetrics(editorLines, editorInput);
-        syncEditorScroll();
-        syncHeroScroll();
+    const copyCode = document.getElementById("copy-code");
+    let copyTimer;
+    copyCode.addEventListener("click", async () => {
+        window.clearTimeout(copyTimer);
+        try {
+            await navigator.clipboard.writeText(editorInput.value);
+            copyCode.textContent = copyCode.dataset.copied;
+        } catch (_) {
+            copyCode.textContent = copyCode.dataset.failed;
+        }
+        copyTimer = window.setTimeout(() => { copyCode.textContent = copyCode.dataset.copy; }, 1700);
     });
 
-    (function () {
-        const shell = document.querySelector(".shell");
-        const layers = Array.from(document.querySelectorAll(".layer"));
-        const snapLinks = Array.from(document.querySelectorAll('a[href^="#"]'));
-        const interactiveSelector = ".editor-stack, .readonly-shell, #run-output, .autocomplete";
-        const desktopSnapQuery = window.matchMedia("(min-width: 1400px)");
-        const transition = "transform 1200ms cubic-bezier(0.22, 1, 0.36, 1)";
-        let activeIndex = 0;
-        let animating = false;
-        let wheelLock = false;
-        let touchStartY = 0;
-        let touchStartTarget = null;
-
-        if (!shell || layers.length === 0) return;
-
-        if ("scrollRestoration" in history) {
-            history.scrollRestoration = "manual";
-        }
-
-        function getLayerIndexFromHash(hash) {
-            if (!hash) return 0;
-            const target = document.querySelector(hash);
-            if (!target) return 0;
-            const layer = target.classList.contains("layer") ? target : target.closest(".layer");
-            if (!layer) return 0;
-            const idx = layers.indexOf(layer);
-            return idx >= 0 ? idx : 0;
-        }
-
-        function updateNavState() {
-            const currentHash = layers[activeIndex] && layers[activeIndex].id ? "#" + layers[activeIndex].id : "";
-            snapLinks.forEach(function (link) {
-                const hash = link.getAttribute("href");
-                const idx = getLayerIndexFromHash(hash);
-                link.classList.toggle("active", idx === activeIndex || hash === currentHash);
-            });
-        }
-
-        /* Track whether the #syntax section inside #playground is in view (non-desktop only) */
-        var syntaxInView = false;
-        var syntaxEl = document.getElementById("syntax");
-
-        function updateNavStateNatural() {
-            var activeHash;
-            if (syntaxInView) {
-                activeHash = "#syntax";
-            } else {
-                activeHash = layers[activeIndex] && layers[activeIndex].id ? "#" + layers[activeIndex].id : "";
-            }
-            snapLinks.forEach(function (link) {
-                var hash = link.getAttribute("href");
-                link.classList.toggle("active", hash === activeHash);
-            });
-        }
-
-        function initNaturalScrolling() {
-            shell.style.willChange = "auto";
-            shell.style.transition = "none";
-            shell.style.transform = "none";
-            document.body.style.overflowY = "auto";
-            document.body.style.overflowX = "hidden";
-
-            let observer = null;
-            let syntaxObserver = null;
-
-            /* Observe #syntax element separately to distinguish Playground vs Design */
-            if ("IntersectionObserver" in window && syntaxEl) {
-                syntaxObserver = new IntersectionObserver(function (entries) {
-                    entries.forEach(function (entry) {
-                        syntaxInView = entry.isIntersecting && entry.intersectionRatio >= 0.3;
-                    });
-                    updateNavStateNatural();
-                    syncLocaleOptionHrefs();
-                }, {
-                    root: null,
-                    threshold: [0.1, 0.3, 0.5]
-                });
-                syntaxObserver.observe(syntaxEl);
-            }
-
-            if ("IntersectionObserver" in window) {
-                observer = new IntersectionObserver(function (entries) {
-                    let bestIndex = activeIndex;
-                    let bestRatio = 0;
-                    entries.forEach(function (entry) {
-                        if (!entry.isIntersecting) return;
-                        const idx = layers.indexOf(entry.target);
-                        if (idx < 0) return;
-                        if (entry.intersectionRatio >= bestRatio) {
-                            bestRatio = entry.intersectionRatio;
-                            bestIndex = idx;
-                        }
-                    });
-                    if (bestRatio > 0) {
-                        activeIndex = bestIndex;
-                        updateNavStateNatural();
-                        syncLocaleOptionHrefs();
-                    }
-                }, {
-                    root: null,
-                    threshold: [0.2, 0.35, 0.5, 0.65]
-                });
-
-                layers.forEach(function (layer) {
-                    observer.observe(layer);
-                });
-            }
-
-            function syncFromHash(instant) {
-                const hash = location.hash || "#intro";
-                activeIndex = getLayerIndexFromHash(hash);
-                if (hash === "#syntax") syntaxInView = true;
-                else syntaxInView = false;
-                updateNavStateNatural();
-                syncLocaleOptionHrefs();
-                if (!hash || hash === "#intro" || !instant) return;
-                const target = document.querySelector(hash);
-                if (!target) return;
-                target.scrollIntoView({
-                    behavior: "auto",
-                    block: "start"
-                });
-            }
-
-            window.addEventListener("hashchange", function () {
-                syncFromHash(true);
-            });
-
-            snapLinks.forEach(function (link) {
-                link.addEventListener("click", function (event) {
-                    const hash = link.getAttribute("href");
-                    if (!hash || !hash.startsWith("#")) return;
-                    const target = document.querySelector(hash);
-                    if (!target) return;
-                    event.preventDefault();
-                    history.replaceState(null, "", hash);
-                    activeIndex = getLayerIndexFromHash(hash);
-                    if (hash === "#syntax") syntaxInView = true;
-                    else syntaxInView = false;
-                    updateNavStateNatural();
-                    syncLocaleOptionHrefs();
-                    target.scrollIntoView({
-                        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-                        block: "start"
-                    });
-                });
-            });
-
-            window.addEventListener("scroll", function () {
-                if (observer) return;
-                const mid = window.scrollY + (window.innerHeight * 0.35);
-                let best = 0;
-                for (let i = 0; i < layers.length; i++) {
-                    if (layers[i].offsetTop <= mid) {
-                        best = i;
-                    }
-                }
-                /* Fallback syntax detection */
-                if (syntaxEl) {
-                    var rect = syntaxEl.getBoundingClientRect();
-                    syntaxInView = rect.top < window.innerHeight * 0.65 && rect.bottom > window.innerHeight * 0.35;
-                }
-                if (best !== activeIndex) {
-                    activeIndex = best;
-                    updateNavStateNatural();
-                    syncLocaleOptionHrefs();
-                }
-            }, { passive: true });
-
-            syncFromHash(false);
-            return;
-        }
-
-        if (!desktopSnapQuery.matches) {
-            initNaturalScrolling();
-            return;
-        }
-
-        shell.style.willChange = "transform";
-        shell.style.transition = transition;
-        shell.style.transform = "translate3d(0, 0, 0)";
-        document.body.style.overflowY = "hidden";
-        document.body.style.overflowX = "hidden";
-
-        function resetNativeScroll() {
-            window.scrollTo(0, 0);
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-        }
-
-        function isInteractiveArea(target) {
-            if (!target || !target.closest) return false;
-            return !!target.closest(interactiveSelector);
-        }
-
-        function moveTo(index, instant, hash) {
-            const nextIndex = Math.max(0, Math.min(index, layers.length - 1));
-            if (!instant && nextIndex === activeIndex) {
-                updateNavState();
-                return;
-            }
-            activeIndex = nextIndex;
-            animating = !instant;
-            shell.style.transition = instant ? "none" : transition;
-            resetNativeScroll();
-            shell.style.transform = "translate3d(0, -" + layers[nextIndex].offsetTop + "px, 0)";
-
-            if (hash && hash !== location.hash) {
-                history.replaceState(null, "", hash);
-            } else if (!hash && layers[nextIndex].id && location.hash !== "#" + layers[nextIndex].id) {
-                history.replaceState(null, "", "#" + layers[nextIndex].id);
-            }
-
-            updateNavState();
-            syncLocaleOptionHrefs();
-
-            if (instant) {
-                requestAnimationFrame(function () {
-                    shell.style.transition = transition;
-                });
-            }
-        }
-
-        function nudge(step) {
-            if (animating) return;
-            const next = activeIndex + step;
-            if (next < 0 || next >= layers.length) return;
-            moveTo(next, false);
-        }
-
-        shell.addEventListener("transitionend", function (event) {
-            if (event.propertyName === "transform") {
-                animating = false;
-            }
-        });
-
-        window.addEventListener("resize", function () {
-            moveTo(activeIndex, true);
-        });
-
-        window.addEventListener("pageshow", function () {
-            resetNativeScroll();
-            moveTo(getLayerIndexFromHash(location.hash || "#intro"), true, location.hash || "#intro");
-        });
-
-        window.addEventListener("hashchange", function () {
-            resetNativeScroll();
-            moveTo(getLayerIndexFromHash(location.hash || "#intro"), false, location.hash || "#intro");
-        });
-
-        window.addEventListener("wheel", function (event) {
-            if (isInteractiveArea(event.target)) return;
-            event.preventDefault();
-            if (animating || wheelLock) return;
-
-            const delta = event.deltaY;
-            if (Math.abs(delta) < 18) return;
-
-            wheelLock = true;
-            nudge(delta > 0 ? 1 : -1);
-            setTimeout(function () {
-                wheelLock = false;
-            }, 220);
-        }, { passive: false });
-
-        window.addEventListener("keydown", function (event) {
-            if (document.activeElement === editorInput) return;
-            if (document.activeElement && document.activeElement.closest && document.activeElement.closest(interactiveSelector)) return;
-
-            if (event.key === "ArrowDown" || event.key === "PageDown" || event.key === " ") {
-                event.preventDefault();
-                nudge(1);
-            } else if (event.key === "ArrowUp" || event.key === "PageUp") {
-                event.preventDefault();
-                nudge(-1);
-            } else if (event.key === "Home") {
-                event.preventDefault();
-                moveTo(0, false, "#intro");
-            } else if (event.key === "End") {
-                event.preventDefault();
-                moveTo(layers.length - 1, false, "#" + layers[layers.length - 1].id);
-            }
-        });
-
-        window.addEventListener("touchstart", function (event) {
-            touchStartTarget = event.target;
-            if (isInteractiveArea(event.target)) return;
-            touchStartY = event.touches[0].clientY;
-        }, { passive: true });
-
-        window.addEventListener("touchmove", function (event) {
-            if (isInteractiveArea(touchStartTarget)) return;
-            event.preventDefault();
-        }, { passive: false });
-
-        window.addEventListener("touchend", function (event) {
-            if (isInteractiveArea(touchStartTarget) || animating) return;
-            const touch = event.changedTouches[0];
-            if (!touch) return;
-            const delta = touchStartY - touch.clientY;
-            if (Math.abs(delta) < 48) return;
-            nudge(delta > 0 ? 1 : -1);
-        }, { passive: true });
-
-        snapLinks.forEach(function (link) {
-            link.addEventListener("click", function (event) {
-                const hash = link.getAttribute("href");
-                if (!hash || !hash.startsWith("#")) return;
-                event.preventDefault();
-                moveTo(getLayerIndexFromHash(hash), false, hash);
-            });
-        });
-
-        resetNativeScroll();
-        moveTo(getLayerIndexFromHash(location.hash || "#intro"), true, location.hash || "#intro");
-        requestAnimationFrame(function () {
-            resetNativeScroll();
-        });
-    })();
-
-    /* ===== Full-page section snap — transform-based, zero latency ===== */
+    setActiveTab(initialSampleId);
+    loadSample(initialSampleId);
+    window.addEventListener("resize", () => {
+        syncGutterMetrics(editorLines, editorInput);
+        syncEditorScroll();
+        if (acVisible()) positionAutocomplete();
+    });
 })();

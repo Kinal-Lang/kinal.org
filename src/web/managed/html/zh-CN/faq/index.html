@@ -1,53 +1,359 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>常见问题 — Kinal 编程语言</title>
-    <meta name="description" content="关于 Kinal 编程语言的常见问题。了解许可证、平台支持、性能、与其他语言的比较以及如何入门。">
-    <meta name="keywords" content="Kinal FAQ, Kinal 常见问题, Kinal 许可证, Kinal 平台, Kinal 性能, Kinal 开源">
-    <meta name="robots" content="index,follow">
-    <link rel="canonical" href="https://kinal.org/zh-CN/faq">
-    <meta property="og:title" content="常见问题 — Kinal 编程语言">
-    <meta property="og:description" content="关于 Kinal 编程语言的常见问题。">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://kinal.org/zh-CN/faq">
-    <meta property="og:site_name" content="Kinal">
-    <meta property="og:locale" content="zh_CN">
-    <link rel="alternate" hreflang="en" href="https://kinal.org/faq">
-    <link rel="alternate" hreflang="zh-CN" href="https://kinal.org/zh-CN/faq">
-    <link rel="alternate" hreflang="x-default" href="https://kinal.org/faq">
-    <link rel="icon" href="/static/logo.png">
-    <link rel="stylesheet" href="/static/site.css?v=20260409a">
-</head>
-<body>
-    <div class="page-bg" aria-hidden="true"></div>
-    <header class="topbar"><a class="brand" href="/zh-CN"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><div><strong>Kinal</strong><span>更干净的语法，更直接的原生控制</span></div></a><button class="topbar-toggle" id="topbar-toggle" type="button" aria-label="切换菜单"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button><div class="topbar-actions"><nav class="topnav">
-                <a href="/zh-CN">主页</a>
-                <a href="/zh-CN/docs">文档</a>
-                <a href="/zh-CN/download">下载</a>
-                <a href="/zh-CN/what-is-kinal">关于</a>
-                <a href="/zh-CN/faq" class="active">FAQ</a>
-                <a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><div class="locale-switch" id="locale-switch"><button class="locale-trigger" id="locale-trigger" type="button" aria-haspopup="true" aria-expanded="false"><span class="locale-label">简体中文</span><span class="locale-caret" aria-hidden="true"></span></button><div class="locale-menu" id="locale-menu" role="menu"><a class="locale-option" href="/faq" data-locale="en" role="menuitem">English</a><a class="locale-option active" href="/zh-CN/faq" data-locale="zh-CN" role="menuitem">简体中文</a></div></div></div></header>
-    <main class="shell subpage">
-        <article class="content-page prose-page" id="faq-page">
-            <div class="content-header"><p class="eyebrow">帮助</p><h1>常见问题</h1><p class="content-lead">关于 Kinal 的常见问题，在此解答。</p></div>
-            <section class="faq-list">
-                <details class="faq-item" open><summary><h2>什么是 Kinal？</h2></summary><p>Kinal 是一门现代通用编程语言，结合了 C# 和 Java 等高级语言的可读语法和开发者体验，以及 C 和 Rust 等系统语言的底层能力和原生控制。通过 LLVM 编译为原生代码，也可在内置虚拟机上运行。</p></details>
-                <details class="faq-item"><summary><h2>Kinal 是开源的吗？</h2></summary><p>是的。Kinal 在 GitHub 上开源开发：<a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">Kinal-Lang/Kinal</a>。欢迎贡献。</p></details>
-                <details class="faq-item"><summary><h2>Kinal 支持哪些平台？</h2></summary><p>Kinal 目前完整支持 <strong>Windows</strong>、<strong>Linux</strong>、<strong>macOS</strong> 三大主流操作系统，并且它们<strong>全部同时支持 x64 和 ARM64 架构</strong>，一共 6 个原生目标编译平台。</p></details>
-                <details class="faq-item"><summary><h2>Kinal 和 Rust 有什么区别？</h2></summary><p>Rust 通过所有权系统和借用检查器专注于内存安全，这增加了编译期的复杂性。Kinal 采取不同方法 — 提供类似 C#/Java 的熟悉语法，配合直接的原生控制和 FFI，优先考虑可读性和生产力，同时仍能进行系统级工作。</p></details>
-                <details class="faq-item"><summary><h2>Kinal 和 C# 有什么区别？</h2></summary><p>C# 提供出色的开发体验，但通常运行在托管运行时上（CLR/JIT）。Kinal 借鉴了 C# 很多干净的语法 and OOP 模型，但通过 LLVM 直接编译为原生代码。Kinal 还提供一等 FFI、指针操作和运行时级控制。</p></details>
-                <details class="faq-item"><summary><h2>可以从 Kinal 调用 C 库吗？</h2></summary><p>可以。Kinal 内置了<a href="/zh-CN/docs#language/ffi">外部函数接口（FFI）</a>，可以直接声明和调用 C 函数，无需外部绑定生成器。使用 <code>Extern</code> 关键字即可。</p></details>
-                <details class="faq-item"><summary><h2>Kinal 编译器是自举的吗？</h2></summary><p><strong>目前并不是完全自举的。</strong>Kinal 语言的核心编译器使用 C 语言编写。但语言的标准库（IO.* 等）以及核心的 KinalVM 虚拟机是由 Kinal 自身编写的。</p></details>
-                <details class="faq-item"><summary><h2>学习曲线如何？</h2></summary><p>如果你了解 C#、Java 或类似的 C 系语言，你会发现 Kinal 的语法非常熟悉。<a href="/zh-CN/docs#getting-started/hello-world">入门教程</a>大约五分钟即可完成。</p></details>
-                <details class="faq-item"><summary><h2>可以不安装就试用 Kinal 吗？</h2></summary><p>可以！<a href="/zh-CN#playground">在线 Playground</a> 允许你直接在浏览器中编写和运行 Kinal 代码。</p></details>
-                <details class="faq-item"><summary><h2>有 IDE 支持吗？</h2></summary><p>提供了 VS Code 扩展，支持语法高亮和基本语言功能。可在 <a href="https://github.com/Kinal-Lang" target="_blank" rel="noopener noreferrer">Kinal-Lang GitHub 组织</a>中找到。</p></details>
-            </section>
-            <div class="content-cta"><a class="button primary" href="/zh-CN/docs">阅读文档</a><a class="button ghost" href="https://github.com/Kinal-Lang/Kinal/discussions" target="_blank" rel="noopener noreferrer">提出问题</a></div>
-        </article>
+    <meta
+      content="关于 Kinal 编程语言的常见问题。了解许可证、平台支持、性能、与其他语言的比较以及如何入门。"
+      name="description"
+    />
+    <meta
+      content="Kinal FAQ, Kinal 常见问题, Kinal 许可证, Kinal 平台, Kinal 性能, Kinal 开源"
+      name="keywords"
+    />
+    <meta content="index,follow" name="robots" />
+    <link href="https://kinal.org/zh-CN/faq" rel="canonical" />
+    <meta content="常见问题 — Kinal 编程语言" property="og:title" />
+    <meta content="关于 Kinal 编程语言的常见问题。" property="og:description" />
+    <meta content="website" property="og:type" />
+    <meta content="https://kinal.org/zh-CN/faq" property="og:url" />
+    <meta content="Kinal" property="og:site_name" />
+    <meta content="zh_CN" property="og:locale" />
+    <link href="https://kinal.org/faq" hreflang="en" rel="alternate" />
+    <link href="https://kinal.org/zh-CN/faq" hreflang="zh-CN" rel="alternate" />
+    <link href="https://kinal.org/faq" hreflang="x-default" rel="alternate" />
+    <link
+      href="/static/logo.png?v=20261109-project"
+      rel="icon"
+      type="image/png"
+    />
+    <meta content="#090909" name="theme-color" />
+    <link href="/static/site.css?v=20261109-catalog" rel="stylesheet" />
+    <link
+      as="font"
+      crossorigin=""
+      href="/static/fonts/manrope.woff2"
+      rel="preload"
+      type="font/woff2"
+    />
+  </head>
+  <body class="page-faq">
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    <header class="topbar">
+      <a aria-label="Kinal 首页" class="brand" href="/zh-CN"
+        ><img
+          alt=""
+          class="brand-mark"
+          height="28"
+          src="/static/logo.png?v=20261109-project"
+          width="28"
+        /><span>Kinal</span></a
+      >
+      <button
+        aria-controls="topbar-actions"
+        aria-expanded="false"
+        aria-label="菜单"
+        class="topbar-toggle"
+        id="topbar-toggle"
+        type="button"
+      >
+        <span></span><span></span>
+      </button>
+      <div class="topbar-actions" id="topbar-actions">
+        <nav aria-label="主导航" class="topnav">
+          <a href="/zh-CN">首页</a> <a href="/zh-CN/docs">文档</a
+          ><a href="/zh-CN/what-is-kinal">语言</a
+          ><a href="/zh-CN/why-kinal">设计</a
+          ><a aria-current="page" class="active" href="/zh-CN/faq">常见问题</a>
+        </nav>
+        <div class="header-tools">
+          <a
+            aria-label="Kinal on GitHub"
+            class="source-link"
+            href="https://github.com/Kinal-Lang/Kinal"
+            rel="noopener noreferrer"
+            target="_blank"
+            ><svg
+              aria-hidden="true"
+              fill="currentColor"
+              height="20"
+              viewbox="0 0 24 24"
+              width="20"
+            >
+              <path
+                d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.99 1.03-2.69-.1-.26-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.6 9.6 0 0 1 12 6.82a9.6 9.6 0 0 1 2.5.34c1.9-1.3 2.74-1.03 2.74-1.03.55 1.38.2 2.39.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2z"
+              ></path></svg
+          ></a>
+          <div class="locale-switch" id="locale-switch">
+            <button
+              aria-controls="locale-menu"
+              aria-expanded="false"
+              class="locale-trigger"
+              id="locale-trigger"
+              type="button"
+            >
+              中<span aria-hidden="true" class="locale-caret"></span>
+            </button>
+            <div class="locale-menu" id="locale-menu">
+              <a
+                class="locale-option"
+                data-locale="en"
+                href="/faq"
+                hreflang="en"
+                lang="en"
+                >English</a
+              >
+              <a
+                class="locale-option active"
+                data-locale="zh-CN"
+                href="/zh-CN/faq"
+                hreflang="zh-CN"
+                lang="zh-CN"
+                >简体中文</a
+              >
+            </div>
+          </div>
+          <a class="header-download" href="/zh-CN/download"
+            >下载 Kinal<span aria-hidden="true">↓</span></a
+          >
+        </div>
+      </div>
+    </header>
+    <main class="faq-page shell" id="main-content" tabindex="-1">
+      <header class="faq-heading content-heading">
+        <h1>常见问题</h1>
+        <p class="lead">关于安装、平台支持、语言特性和工具链。</p>
+      </header>
+      <div class="faq-layout">
+        <aside class="faq-index">
+          <label class="search-field"
+            ><svg
+              aria-hidden="true"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-width="1.6"
+              viewbox="0 0 24 24"
+              width="18"
+            >
+              <circle cx="10.5" cy="10.5" r="6.5"></circle>
+              <path d="m16 16 4 4"></path></svg
+            ><input
+              aria-label="搜索常见问题"
+              id="faq-filter"
+              placeholder="搜索问题或关键词…"
+              type="search"
+          /></label>
+          <nav aria-label="问题分类" class="section-links">
+            <a href="#getting-started"
+              ><span>开始使用</span><span class="faq-count">05</span></a
+            ><a href="#platforms"
+              ><span>平台与互操作</span><span class="faq-count">05</span></a
+            ><a href="#toolchain"
+              ><span>工具链与发行版</span><span class="faq-count">04</span></a
+            >
+          </nav>
+          <div class="faq-help">
+            <p>还没有找到答案？</p>
+            <a href="/zh-CN/docs"
+              >查阅文档<span aria-hidden="true" class="arrow">→</span></a
+            ><a
+              class="text-link"
+              href="https://github.com/Kinal-Lang/Kinal/issues"
+              rel="noopener noreferrer"
+              target="_blank"
+              >在 GitHub 交流<span aria-hidden="true" class="arrow">↗</span></a
+            >
+          </div>
+        </aside>
+        <div class="faq-questions">
+          <p class="loading-message" hidden="" id="faq-empty" role="status">
+            没有找到匹配的问题，换个关键词试试。
+          </p>
+          <section class="faq-group" id="getting-started">
+            <h2>开始使用</h2>
+            <details class="faq-item">
+              <summary>什么是 Kinal？</summary>
+              <p>
+                Kinal 是一门开源、静态类型的通用编程语言，支持 LLVM 原生编译和
+                KinalVM 字节码执行。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Kinal 是开源的吗？</summary>
+              <p>
+                是的。Kinal 在 GitHub 上开源开发：<a
+                  href="https://github.com/Kinal-Lang/Kinal"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  >Kinal-Lang/Kinal</a
+                >。欢迎贡献。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>可以不安装就试用 Kinal 吗？</summary>
+              <p>
+                可以。在<a href="/zh-CN#playground">在线运行页面</a
+                >中编辑示例，点击“运行”即可查看结果。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>学习曲线如何？</summary>
+              <p>
+                如果使用过 C#、Java 或其他 C 系语言，Kinal
+                的函数和控制流语法会比较熟悉。可以从
+                <a href="/zh-CN/docs#getting-started/hello-world"
+                  >Hello World 教程</a
+                >开始。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>有 IDE 支持吗？</summary>
+              <p>
+                Kinal VS Code 扩展提供高亮、LSP
+                诊断、补全、定义跳转、格式化、运行和创建项目命令。安装完整工具链并配置编译器及
+                LSP 路径；工程边界由最近的 kinal.knproj 决定。
+              </p>
+            </details>
+          </section>
+          <section class="faq-group" id="platforms">
+            <h2>平台与互操作</h2>
+            <details class="faq-item">
+              <summary>Kinal 支持哪些平台？</summary>
+              <p>
+                Native 目标包括 Windows、Linux、macOS 的 x64／ARM64，以及
+                Windows x86 和受支持的 freestanding
+                目标。具体发行包、SDK、原生资产和 API 支持范围应分别核对；IO.UI
+                当前使用 Windows Win32 后端。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>可以从 Kinal 调用 C 库吗？</summary>
+              <p>
+                可以，使用 Extern 声明函数，使用 Delegate 描述函数指针。Native
+                ABI、调用约定、C 整数宽度和指针生命周期必须匹配；任意 C
+                库调用不是通用 VM 能力。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Native 和 VM 的功能相同吗？</summary>
+              <p>
+                不是。当前 C KNC 后端在一般 Await、Task
+                Run、集合创建、接口分派和原生 FFI
+                等路径有限制。先阅读后端支持表，再验证具体示例。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Kinal 如何标记危险操作？</summary>
+              <p>
+                Kinal 通过 Safe、Trusted 和 Unsafe 表达操作边界。具体规则见<a
+                  href="/zh-CN/why-kinal#safety"
+                  >安全设计</a
+                >与<a href="/zh-CN/docs#advanced/memory-management"
+                  >内存和生命周期</a
+                >。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Kinal 支持面向对象的原生程序吗？</summary>
+              <p>
+                Kinal 提供常见的类、接口和属性语法，并可通过 LLVM
+                编译为原生程序，通过 C ABI 实现互操作。
+              </p>
+            </details>
+          </section>
+          <section class="faq-group" id="toolchain">
+            <h2>工具链与发行版</h2>
+            <details class="faq-item">
+              <summary>可以只复制编译器可执行文件吗？</summary>
+              <p>
+                应保留完整发行目录，包括 LLVM、链接器、运行时、标准包和
+                LSP。已生成 Native 程序和打包 VM 程序也可能依赖系统或包动态库。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>如何管理多个源文件？</summary>
+              <p>
+                使用 kinal.knproj 的 SourceSet 与 Profile，选择
+                FileOnly、EntryUnit、ReachableUnits 或 AllSources。Get
+                控制可见性，不会越过活动源码集合边界。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>文档与发行版不一致时怎么办？</summary>
+              <p>
+                本参考跟随当前 C 源码。先检查 kinal --version 和 kinalvm
+                --version，再核对安装包与当前源码差异；源码常量和 KNC
+                文件格式版本是不同概念。
+              </p>
+            </details>
+            <details class="faq-item">
+              <summary>Kinal 编译器是自举的吗？</summary>
+              <p>
+                本网站文档以当前 C
+                实现的编译器为基准。仓库中的其他编译器实现和实验不代表 C CLI
+                已提供同名命令或相同行为。标准包与 KinalVM 使用
+                Kinal，并通过必要的原生桥接连接宿主环境。
+              </p>
+            </details>
+          </section>
+        </div>
+      </div>
     </main>
-    <footer class="site-footer"><div class="shell"><div class="footer-inner"><div class="footer-brand"><img class="brand-mark" src="/static/logo.png" alt="Kinal Logo"><span>Kinal 编程语言</span></div><nav class="footer-links"><a href="/zh-CN/docs">文档</a><a href="/zh-CN/download">下载</a><a href="/zh-CN/what-is-kinal">关于</a><a href="/zh-CN/faq">FAQ</a><a href="https://github.com/Kinal-Lang/Kinal" target="_blank" rel="noopener noreferrer">GitHub</a></nav><p class="footer-note">由 Kinal 构建 · © 2026 Kinal Contributors</p></div></div></footer>
-    <script>(function(){var toggle=document.getElementById("topbar-toggle");var topbar=document.querySelector(".topbar");if(toggle&&topbar){toggle.addEventListener("click",function(){topbar.classList.toggle("menu-open")})}var ls=document.getElementById("locale-switch");var lt=document.getElementById("locale-trigger");if(ls&&lt){lt.addEventListener("click",function(e){e.stopPropagation();ls.classList.toggle("open")});document.addEventListener("click",function(){ls.classList.remove("open")})}})();</script>
-</body>
+    <footer class="site-footer">
+      <div class="shell">
+        <div class="footer-main">
+          <div class="footer-brand">
+            <a class="brand" href="/zh-CN"
+              ><img
+                alt=""
+                class="brand-mark"
+                height="28"
+                src="/static/logo.png?v=20261109-project"
+                width="28"
+              /><span>Kinal</span></a
+            >
+            <p>开源编程语言</p>
+          </div>
+          <nav aria-label="学习">
+            <h2>文档与下载</h2>
+            <a href="/zh-CN/docs#getting-started/hello-world">快速入门</a
+            ><a href="/zh-CN/download">下载工具链</a
+            ><a href="/zh-CN#playground">Playground</a>
+          </nav>
+          <nav aria-label="探索">
+            <h2>关于 Kinal</h2>
+            <a href="/zh-CN/what-is-kinal">语言概览</a
+            ><a href="/zh-CN/why-kinal">设计原则</a
+            ><a href="/zh-CN/faq">常见问题</a>
+          </nav>
+          <nav aria-label="开源项目">
+            <h2>开源项目</h2>
+            <a
+              class="text-link"
+              href="https://github.com/Kinal-Lang/Kinal"
+              rel="noopener noreferrer"
+              target="_blank"
+              >GitHub<span aria-hidden="true" class="arrow">↗</span></a
+            ><a
+              class="text-link"
+              href="https://github.com/Kinal-Lang/Kinal/issues"
+              rel="noopener noreferrer"
+              target="_blank"
+              >反馈问题<span aria-hidden="true" class="arrow">↗</span></a
+            ><a
+              class="text-link"
+              href="https://github.com/Kinal-Lang/Kinal/releases"
+              rel="noopener noreferrer"
+              target="_blank"
+              >发行记录<span aria-hidden="true" class="arrow">↗</span></a
+            >
+          </nav>
+        </div>
+      </div>
+    </footer>
+    <script defer="" src="/static/site.js?v=20261109"></script>
+  </body>
 </html>

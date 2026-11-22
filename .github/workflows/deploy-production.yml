@@ -179,6 +179,27 @@ jobs:
           set -euo pipefail
           python build.py
 
+      - name: Check out the public documentation and installer
+        if: steps.config.outputs.ready == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Kinal-Lang/Kinal
+          path: site-content
+          sparse-checkout: |
+            docs
+            infra/assets/scripts
+          persist-credentials: false
+
+      - name: Include documentation and install scripts in the site
+        if: steps.config.outputs.ready == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/managed/static/{docs,scripts}
+          cp -a site-content/docs/. build/managed/static/docs/
+          cp -a site-content/infra/assets/scripts/. build/managed/static/scripts/
+          install -m 755 site-content/infra/assets/scripts/install.sh build/managed/install.sh
+
       - name: Package deploy bundles
         if: steps.config.outputs.ready == 'true'
         shell: bash
