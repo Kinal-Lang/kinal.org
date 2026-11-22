@@ -207,7 +207,7 @@ jobs:
           set -euo pipefail
           mkdir -p deploy
           tar -czf deploy/kinal-org-site.tar.gz -C build .
-          tar -czf deploy/kinal-compiler.tar.gz -C "$COMPILER_ROOT" .
+          tar --exclude='./package-cache' -czf deploy/kinal-compiler.tar.gz -C "$COMPILER_ROOT" .
 
       - name: Upload build artifacts
         if: steps.config.outputs.ready == 'true'

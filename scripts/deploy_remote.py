@@ -174,6 +174,8 @@ install_compiler_bundle() {
     exit 1
   fi
 
+  # The compiler locks extracted standard packages even on cache hits.
+  install -d -m 0700 -o "$SERVICE_USER" -g "$SERVICE_GROUP" "$compiler_dir/package-cache"
   chmod +x "$compiler_dir/kinal" || true
   if [ -f "$compiler_dir/kinalvm" ]; then
     chmod +x "$compiler_dir/kinalvm" || true
@@ -345,6 +347,38 @@ verify_deploy() {
   systemctl is-active --quiet "$SERVICE_NAME"
   curl -fsS -H 'Host: kinal.org' http://127.0.0.1/ >/dev/null
   curl -fsS -H 'Host: kinal.org' http://127.0.0.1/static/app.js >/dev/null
+  python3 - "$SITE_ROOT/current/managed/static/content/hero.kn" "$SITE_RELEASE" <<'PY'
+import sys
+import time
+from pathlib import Path
+from urllib.error import HTTPError
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+
+api = "http://127.0.0.1/api/run"
+headers = {"Host": "kinal.org", "Content-Type": "text/plain; charset=utf-8"}
+source = Path(sys.argv[1]).read_bytes() + b"\n// deploy " + sys.argv[2].encode()
+with urlopen(Request(api, data=source, headers=headers), timeout=15) as response:
+    job = response.read().decode().strip()
+    if response.status != 202 or not job:
+        raise SystemExit("Playground did not accept the deployment sample")
+deadline = time.monotonic() + 45
+while time.monotonic() < deadline:
+    try:
+        with urlopen(Request(api + "/status?" + urlencode({"id": job}), headers=headers), timeout=10) as response:
+            result = response.read().decode()
+            if response.status != 202:
+                state, _, output = result.partition("\n")
+                if state.strip() != "completed" or output.strip() != "Hello, World!":
+                    raise SystemExit("Unexpected Playground result: " + result)
+                print("Playground compiled and ran Hello World")
+                break
+    except HTTPError as error:
+        raise SystemExit("Playground failed: " + error.read().decode(errors="replace"))
+    time.sleep(0.5)
+else:
+    raise SystemExit("Playground deployment sample timed out")
+PY
 }
 
 cleanup_uploads() {
