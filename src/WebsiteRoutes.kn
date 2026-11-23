@@ -300,6 +300,7 @@ Trusted Static Function void ServeManagedPage(IO.Web.Context context, string htm
 Trusted Static Function IO.Web.Server BuildServer(int port = 18081, string host = "0.0.0.0")
 {
     IO.Web.Server server = New IO.Web.Server(port, host);
+    server.MaxRequestBytes = MaxCodeSizeBytes;
     server.UseStatic("/static", WebsitePaths.ManagedStaticPath()).RefreshRoutes().UseRoutes();
     Return server;
 }

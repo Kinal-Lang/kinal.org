@@ -4,18 +4,20 @@ from __future__ import annotations
 import argparse
 import os
 import pathlib
+import platform
 import shutil
 import subprocess
 import sys
+import tempfile
 
 
 ROOT = pathlib.Path(__file__).resolve().parent
 SRC_DIR = ROOT / "src"
 BUILD_DIR = ROOT / "build"
-ENTRY_FILE = SRC_DIR / "Main.kn"
 MANAGED_DIR = SRC_DIR / "web" / "managed"
 TOOLS_DIR = SRC_DIR / "tools"
-RUNNER = TOOLS_DIR / "runner.py"
+sys.path.insert(0, str(TOOLS_DIR))
+from runner import resolve_kinal
 
 
 def is_windows() -> bool:
@@ -24,13 +26,6 @@ def is_windows() -> bool:
 
 def output_executable() -> pathlib.Path:
     return BUILD_DIR / ("Website.exe" if is_windows() else "Website")
-
-
-def cache_source_files() -> list[pathlib.Path]:
-    return sorted(
-        [path for path in SRC_DIR.glob("*.kn") if path.resolve() != ENTRY_FILE.resolve()],
-        key=lambda path: path.name.lower(),
-    )
 
 
 def copy_tree(src: pathlib.Path, dst: pathlib.Path) -> None:
@@ -80,29 +75,35 @@ def prepare_assets() -> None:
 
 def compile_project() -> pathlib.Path:
     output = output_executable()
-    compile_log = BUILD_DIR / "compile.txt"
-    cache_sources = cache_source_files()
-    cmd = [
-        sys.executable,
-        str(RUNNER),
-        "compile",
-        "--source",
-        str(ENTRY_FILE),
-        "--output",
-        str(output),
-        "--log",
-        str(compile_log),
-    ]
-    for source in cache_sources:
-        cmd.extend(["--cache-source", str(source)])
-    proc = subprocess.run(
-        cmd,
-        cwd=str(ROOT),
-    )
-    if proc.returncode != 0:
-        if compile_log.exists():
-            sys.stderr.write(compile_log.read_text(encoding="utf-8", errors="replace"))
-        raise SystemExit(proc.returncode)
+    compiler = resolve_kinal(None)
+    if not compiler:
+        raise SystemExit("Set KINAL_PATH to the Kinal compiler executable.")
+    source = pathlib.Path(os.environ.get("KINAL_SOURCE_ROOT", ROOT.parent / "Kinal")).resolve()
+    version = pathlib.Path("IO.Web/2.0.0")
+    if not (source / "libs/std" / version / "package.knpkg.json").is_file():
+        raise SystemExit("Set KINAL_SOURCE_ROOT to a Kinal checkout containing IO.Web 2.0.0.")
+    with tempfile.TemporaryDirectory(prefix="kinal-site-stdlib-") as staging:
+        std = pathlib.Path(staging)
+        package = std / version
+        shutil.copytree(source / "libs/std" / version, package,
+                        ignore=shutil.ignore_patterns("lib", "native"))
+        subprocess.run([sys.executable, source / "infra/scripts/x/native_http.py",
+                        "--std", std, "--package", "IO.Web"], check=True)
+        (package / "lib").mkdir()
+        subprocess.run([compiler, "pkg", "build", "--manifest", package / "package.knpkg.json",
+                        "-o", package / "lib/IO.Web.klib"], check=True)
+        build = [compiler, "build", "--project", ROOT / "kinal.knproj", "--stdpkg-root", std]
+        if sys.platform.startswith("linux"):
+            arch = {"x86_64": "linux-x64", "aarch64": "linux-arm64"}[platform.machine()]
+            runtime = pathlib.Path(compiler).resolve().parent / "runtime" / arch
+            obj = std / "site.o"
+            subprocess.run([*build, "--emit", "obj", "-o", obj], cwd=ROOT, check=True)
+            subprocess.run([os.environ.get("CC", "cc"), "-no-pie", "-o", output, obj,
+                            runtime / "kn_runtime.o", runtime / "kn_math.o",
+                            package / "native" / arch / "kn_web_native.o",
+                            "-pthread", "-ldl", "-lm"], check=True)
+        else:
+            subprocess.run([*build, "-o", output], cwd=ROOT, check=True)
     return output
 
 

@@ -172,12 +172,26 @@ jobs:
             --token-env GITHUB_TOKEN \
             --output src/web/managed/static/data/releases.json
 
-      - name: Build kinal.org
+      - name: Check out the pinned native HTTP package
+        if: steps.config.outputs.ready == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Kinal-Lang/Kinal
+          ref: 0566e0df42c5d9906df184c3f235e26e4ae4ed51
+          path: native-http
+          sparse-checkout: |
+            infra/scripts/x
+            libs/runtime/src
+            libs/std/IO.Web/2.0.0
+          persist-credentials: false
+
+      - name: Build and test kinal.org
         if: steps.config.outputs.ready == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          python build.py
+          KINAL_SOURCE_ROOT="$GITHUB_WORKSPACE/native-http" python build.py
+          python scripts/test_native_site.py
 
       - name: Check out the public documentation and installer
         if: steps.config.outputs.ready == 'true'

@@ -227,7 +227,7 @@ def cache_key_for_source(source_paths: list[pathlib.Path], compiler: str, stdpkg
             digest.update(str(stdpkg_stat.st_mtime_ns).encode("utf-8"))
         except OSError:
             pass
-    digest.update(b"runner-cache-v2")
+    digest.update(b"runner-cache-v3")
     digest.update(b"windows" if is_windows() else b"linux")
     return digest.hexdigest()
 
@@ -298,10 +298,6 @@ def compiler_bundle_root(compiler: str) -> pathlib.Path:
 
 def compiler_runtime_dir(compiler: str) -> pathlib.Path:
     return compiler_bundle_root(compiler) / "runtime" / "linux-x64"
-
-
-def compiler_ioweb_native_dir(compiler: str) -> pathlib.Path:
-    return compiler_bundle_root(compiler) / "stdpkg" / "IO.Web" / "1.0.0" / "native" / "linux-x64"
 
 
 def copy_tree_contents(src_dir: pathlib.Path, dst_dir: pathlib.Path) -> None:
@@ -407,9 +403,6 @@ def compile_source(args: argparse.Namespace) -> int:
         runtime_dir = compiler_runtime_dir(compiler)
         runtime_obj = runtime_dir / "kn_runtime.o"
         math_obj = runtime_dir / "kn_math.o"
-        ioweb_native_dir = compiler_ioweb_native_dir(compiler)
-        civet_obj = ioweb_native_dir / "CivetWeb.o"
-        web_obj = ioweb_native_dir / "kn_web_civet.o"
         link_cmd = [
             "cc",
             "-no-pie",
@@ -418,13 +411,8 @@ def compile_source(args: argparse.Namespace) -> int:
             str(object_path),
             str(runtime_obj),
             str(math_obj),
+            "-pthread", "-ldl", "-lm",
         ]
-        if civet_obj.exists() and web_obj.exists():
-            link_cmd.extend([str(civet_obj), str(web_obj), "-pthread"])
-        link_cmd.extend([
-            "-ldl",
-            "-lm",
-        ])
         link_proc = subprocess.run(
             link_cmd,
             cwd=str(compile_cwd),

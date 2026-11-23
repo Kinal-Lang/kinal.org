@@ -1,0 +1,10 @@
+Project KinalWebsite
+{
+    Packages { Pins = ["IO.Web@2.0.0"]; }
+    SourceSet "site" { Roots = ["src"]; Include = ["*.kn"]; RequireUnit = true; }
+    Profile "native"
+    {
+        Source { Entry = "src/Main.kn"; Sets = ["site"]; Mode = ReachableUnits; }
+        Build { Backend = Native; Environment = Hosted; }
+    }
+}
