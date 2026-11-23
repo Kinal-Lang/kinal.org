@@ -177,7 +177,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Kinal-Lang/Kinal
-          ref: 0566e0df42c5d9906df184c3f235e26e4ae4ed51
+          ref: 287a3f6a09e02ec49813aa5083a771d53fd37b00
           path: native-http
           sparse-checkout: |
             infra/scripts/x
