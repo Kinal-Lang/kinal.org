@@ -234,9 +234,10 @@
               <summary>What platforms does Kinal support?</summary>
               <p>
                 Native targets include x64/ARM64 Windows, Linux and macOS, plus
-                Windows x86 and supported freestanding targets. Check release
-                assets, SDKs, native libraries and API support separately; IO.UI
-                currently uses Windows Win32.
+                Windows x86 and supported freestanding targets. The 1.0
+                release provides SDKs for Windows, Linux and macOS on x64 and
+                ARM64. On Windows, IO.UI 2.0 draws its controls on a shared
+                Direct3D 11 surface.
               </p>
             </details>
             <details class="faq-item">
@@ -251,10 +252,11 @@
             <details class="faq-item">
               <summary>Do Native and VM support the same features?</summary>
               <p>
-                They have different limits. Current C KNC restrictions include
-                general Await, Task Run, collection creation, interface dispatch
-                and native FFI. Consult the backend support table and verify the
-                exact example.
+                Support varies by backend. Native supports direct C ABI calls.
+                KinalVM provides its own set of host operations, and features
+                such as general Await have separate limits. Consult the
+                <a href="/docs#advanced/backend-support">backend support table</a>
+                for specific APIs.
               </p>
             </details>
             <details class="faq-item">
@@ -301,20 +303,20 @@
             <details class="faq-item">
               <summary>What if documentation differs from my release?</summary>
               <p>
-                This reference tracks current C source. Check kinal --version
-                and kinalvm --version, then compare your release with current
-                source. Source version constants and KNC file-format versions
-                are separate concepts.
+                Check <code>kinal --version</code> and
+                <code>kinalvm --version</code>, then compare the installed SDK
+                with its release notes. The tool versions and KNC file format
+                version are tracked separately.
               </p>
             </details>
             <details class="faq-item">
               <summary>Is the Kinal compiler self-hosted?</summary>
               <p>
-                This website reference follows the current C compiler. Other
-                compiler implementations and experiments in the repository do
-                not establish C CLI command or behavior parity. Standard
-                packages and KinalVM use Kinal with the native bridges required
-                by the host environment.
+                Yes. <a href="https://github.com/Kinal-Lang/Kinal/releases/tag/v1.0.0">Kinal 1.0.0</a>
+                is the first release to ship a compiler written in Kinal and
+                built by Kinal. The 0.10.0 C compiler seeded the bootstrap, and
+                the final two compiler builds matched byte for byte on Windows,
+                Linux and macOS, on both x64 and ARM64.
               </p>
             </details>
           </section>

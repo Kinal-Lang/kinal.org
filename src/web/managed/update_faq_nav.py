@@ -40,13 +40,6 @@ for file in files:
     # 2. Correct FAQ content (Directly target the questions provided by user)
     if 'faq' in file.replace('\\', '/') and 'index.html' in file:
         if 'zh-CN' in file:
-            # Correction: Self-hosted status
-            # Find the "自举" question block
-            content = re.sub(
-                r'<(details|div)[^>]*?faq-item[^>]*?>.*?<summary><h2>.*?自举.*?</h2></summary>.*?<p>.*?</p>.*?</\1>',
-                r'<details class="faq-item"><summary><h2>Kinal 编译器是自举的吗？</h2></summary><p><strong>目前并不是完全自举的。</strong>Kinal 语言的核心编译器使用 C 语言编写。但语言的标准库（IO.* 等）以及核心的 KinalVM 虚拟机是由 Kinal 自身编写的。</p></details>',
-                content, flags=re.DOTALL
-            )
             # Correction: Platform support
             content = re.sub(
                 r'<(details|div)[^>]*?faq-item[^>]*?>.*?<summary><h2>.*?支持哪些平台.*?</h2></summary>.*?<p>.*?</p>.*?</\1>',
@@ -54,12 +47,6 @@ for file in files:
                 content, flags=re.DOTALL
             )
         else:
-            # EN Correction: Self-hosted status
-            content = re.sub(
-                r'<(details|div)[^>]*?faq-item[^>]*?>.*?<summary><h2>.*?self-hosted.*?</h2></summary>.*?<p>.*?</p>.*?</\1>',
-                r'<details class="faq-item"><summary><h2>Is the Kinal compiler self-hosted?</h2></summary><p><strong>Not fully.</strong> The core Kinal compiler is written in C. However, the standard library (IO.*) and the KinalVM are written entirely in Kinal itself.</p></details>',
-                content, flags=re.DOTALL
-            )
             # EN Correction: Platform support
             content = re.sub(
                 r'<(details|div)[^>]*?faq-item[^>]*?>.*?<summary><h2>.*?platforms.*?support.*?</h2></summary>.*?<p>.*?</p>.*?</\1>',

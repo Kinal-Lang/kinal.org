@@ -224,9 +224,9 @@
               <summary>Kinal 支持哪些平台？</summary>
               <p>
                 Native 目标包括 Windows、Linux、macOS 的 x64／ARM64，以及
-                Windows x86 和受支持的 freestanding
-                目标。具体发行包、SDK、原生资产和 API 支持范围应分别核对；IO.UI
-                当前使用 Windows Win32 后端。
+                Windows x86 和受支持的 freestanding 目标。1.0 为 Windows、Linux
+                和 macOS 分别提供 x64 与 ARM64 SDK。Windows 上的 IO.UI 2.0
+                在共享的 Direct3D 11 表面上绘制控件。
               </p>
             </details>
             <details class="faq-item">
@@ -240,9 +240,9 @@
             <details class="faq-item">
               <summary>Native 和 VM 的功能相同吗？</summary>
               <p>
-                不是。当前 C KNC 后端在一般 Await、Task
-                Run、集合创建、接口分派和原生 FFI
-                等路径有限制。先阅读后端支持表，再验证具体示例。
+                各后端的支持范围不同。Native 可以直接调用 C ABI。KinalVM
+                提供自己的宿主操作，通用 Await 等特性也有单独的限制。具体 API
+                请查阅<a href="/zh-CN/docs#advanced/backend-support">后端支持表</a>。
               </p>
             </details>
             <details class="faq-item">
@@ -284,18 +284,18 @@
             <details class="faq-item">
               <summary>文档与发行版不一致时怎么办？</summary>
               <p>
-                本参考跟随当前 C 源码。先检查 kinal --version 和 kinalvm
-                --version，再核对安装包与当前源码差异；源码常量和 KNC
-                文件格式版本是不同概念。
+                先用 <code>kinal --version</code> 和 <code>kinalvm --version</code>
+                检查已安装的 SDK，再对照相应版本的发行说明。工具版本与 KNC
+                文件格式版本分别记录。
               </p>
             </details>
             <details class="faq-item">
               <summary>Kinal 编译器是自举的吗？</summary>
               <p>
-                本网站文档以当前 C
-                实现的编译器为基准。仓库中的其他编译器实现和实验不代表 C CLI
-                已提供同名命令或相同行为。标准包与 KinalVM 使用
-                Kinal，并通过必要的原生桥接连接宿主环境。
+                已完成自举。<a href="https://github.com/Kinal-Lang/Kinal/releases/tag/v1.0.0">Kinal 1.0.0</a>
+                首次发布用 Kinal 编写、由 Kinal 自身构建的编译器。自举以
+                0.10.0 的 C 编译器作为种子。Windows、Linux 和 macOS 各自的
+                x64 与 ARM64 构建中，最后两个阶段的编译器产物逐字节一致。
               </p>
             </details>
           </section>
